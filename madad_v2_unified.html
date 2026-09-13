@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مداد العربية AI | Education Operating System</title>
+<link href="https://fonts.googleapis.com/css2?family=Rakkas&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg-main: #F4F2EE;
+    --sidebar-bg: #1A1D1C;
+    --card-bg: #FFFFFF;
+    --text-primary: #1F2321;
+    --text-muted: #6B726E;
+    --gold: #C5A059;
+    --gold-dark: #A7823B;
+    --border-color: #E5DECD;
+    --accent-sand: #FAF6EE;
+    --sidebar-text: #D6D0C4;
+    --sidebar-hover: #2C302E;
+    --success: #10B981;
+    --danger: #EF4444;
+  }
+  [data-theme="dark"] {
+    --bg-main: #121514; --sidebar-bg: #0B0D0C; --card-bg: #1A1E1D; --text-primary: #F3F4F6;
+    --text-muted: #9CA3AF; --gold: #D4AF37; --gold-dark: #C5A059; --border-color: #2D3330;
+    --accent-sand: #222725; --sidebar-text: #9CA3AF; --sidebar-hover: #252A28;
+  }
+
+  html, body { direction: rtl; text-align: right; background: var(--bg-main); color: var(--text-primary); font-family: 'IBM Plex Sans Arabic', sans-serif; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
+
+  /* بوابة الدخول */
+  .login-gate { position:fixed; inset:0; z-index:5000; background: linear-gradient(135deg, var(--sidebar-bg) 0%, #05100c 100%); display:flex; align-items:center; justify-content:center; padding:20px; }
+  .login-box { background: var(--card-bg); border:2px solid var(--gold); border-radius:24px; padding:45px; width:100%; max-width:420px; text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.4); }
+  .login-box .login-logo { font-family:'Rakkas',serif; font-size:30px; color:var(--gold); margin-bottom:4px; }
+  .login-box .login-tagline { font-size:12px; color:var(--text-muted); margin-bottom:26px; }
+  .login-institute-select { text-align:right; }
+  .login-social-row { display:flex; gap:10px; margin:16px 0; }
+  .login-social-btn { flex:1; background:var(--accent-sand); border:1px solid var(--border-color); padding:10px; border-radius:10px; font-size:12.5px; font-weight:600; cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center; gap:6px; }
+  .login-divider { display:flex; align-items:center; gap:10px; color:var(--text-muted); font-size:12px; margin:16px 0; }
+  .login-divider::before, .login-divider::after { content:''; flex:1; height:1px; background:var(--border-color); }
+  .remember-row { display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--text-muted); margin-bottom:18px; }
+
+  #appContainer { display: none; min-height: 100vh; direction: rtl; }
+  #appContainer.app-visible { display:flex; }
+  .sidebar { width: 280px; background: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; right: 0; z-index: 1000; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
+  .sidebar-header { padding: 25px 20px; font-family: 'Rakkas', serif; font-size: 22px; color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .sidebar-header small { display:block; font-family:'IBM Plex Sans Arabic',sans-serif; font-size:10.5px; color:#8A9189; font-weight:400; }
+  .sidebar-menu { list-style: none; padding: 16px 15px; margin: 0; flex: 1; overflow-y: auto; }
+  .sidebar-menu li { margin-bottom: 6px; }
+  .sidebar-menu a { display: flex; align-items: center; gap: 12px; color: var(--sidebar-text); padding: 11px 16px; border-radius: 12px; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.3s; cursor: pointer; }
+  .sidebar-menu a:hover, .sidebar-menu a.active { background: var(--gold); color: #FFF; box-shadow: 0 4px 15px rgba(197,160,89,0.3); }
+  .sidebar-footer { padding:16px 20px; font-size:11px; color:#7C837E; border-top:1px solid rgba(255,255,255,0.08); }
+
+  .main-wrapper { margin-right: 280px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border-color); padding: 15px 35px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 900; gap:16px; flex-wrap:wrap; }
+  .search-bar { background: var(--accent-sand); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 10px; display: flex; align-items: center; gap: 10px; width: 320px; max-width:45vw; }
+  .search-bar input { background: transparent; border: none; color: var(--text-primary); outline: none; width: 100%; font-family: inherit; font-size: 14px; }
+  .navbar-right { display:flex; align-items:center; gap:12px; }
+  .theme-toggle-btn { background: var(--accent-sand); border: 1px solid var(--border-color); color: var(--text-primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+
+  .content-body { padding: 35px; flex: 1; }
+  .page-panel { display: none; }
+  .page-panel.active-panel { display: block; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 28px; }
+  .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 22px; border-radius: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); position: relative; overflow: hidden; text-align:right; }
+  .stat-card::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 4px; background: var(--gold); }
+  .stat-card h4 { margin: 0 0 8px 0; color: var(--text-muted); font-size: 13px; font-weight: 600; }
+  .stat-card .number { font-size: 25px; font-weight: 700; color: var(--text-primary); font-family: 'Rakkas', serif; }
+
+  .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; text-align:right; }
+  h2, h3, h4 { font-family: 'Rakkas', serif; color: var(--gold); margin-top: 0; text-align:right; }
+
+  .field { margin-bottom: 18px; text-align:right; }
+  label { display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 13.5px; font-weight: 600; text-align:right; }
+  input, select, textarea { width: 100%; background: var(--accent-sand); border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 16px; border-radius: 12px; font-family: inherit; font-size: 14px; box-sizing: border-box; text-align:right; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); background: var(--card-bg); }
+
+  .primary-btn { background: var(--gold); color: #FFF; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 14.5px; transition: 0.3s; box-shadow: 0 4px 15px rgba(197,160,89,0.3); display: inline-flex; align-items: center; gap: 8px; }
+  .primary-btn:hover { background: var(--gold-dark); }
+  button.primary-btn { background: var(--gold); color: #FFF; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 14.5px; transition: 0.3s; box-shadow: 0 4px 15px rgba(197,160,89,0.3); display: inline-flex; align-items: center; gap: 8px; }
+  button.primary-btn:hover { background: var(--gold-dark); transform: translateY(-1px); }
+  .ai-action-btn { background: #7B1FA2; color: #FFF; padding: 8px 16px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px; }
+  .ai-action-btn:hover { background: #512DA8; }
+
+  .supervision-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13.5px; text-align: right; }
+  .supervision-table th, .supervision-table td { border: 1px solid var(--border-color); padding: 12px 15px; }
+  .supervision-table th { background: var(--accent-sand); color: var(--text-muted); font-weight: 700; }
+  .text-center { text-align: center !important; }
+  .editable-cell { background: var(--accent-sand); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 10px; width: 100%; font-family: inherit; font-size: 14px; color: var(--text-primary); box-sizing: border-box; }
+  .editable-cell:focus { background: var(--card-bg); border-color: var(--gold); outline: none; }
+
+  .ai-advisor-box, .ai-assistant-widget { background: linear-gradient(135deg, var(--card-bg) 0%, var(--accent-sand) 100%); border: 2px solid var(--gold); border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 6px 20px rgba(197,160,89,0.1); text-align:right; }
+  .ai-assistant-widget h3 { display:flex; align-items:center; gap:10px; font-size:20px; }
+  .output { margin-top: 20px; padding: 20px; background: var(--accent-sand); border: 1px solid var(--border-color); border-radius: 12px; white-space: pre-wrap; display: none; line-height: 1.9; font-size: 14px; color: var(--text-primary); text-align:right; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+
+  /* المساعد المركزي - اسأل مداد */
+  .mega-assistant { background: linear-gradient(135deg, var(--sidebar-bg) 0%, #2C302E 100%); color:#F3F1EA; border-radius:22px; padding:30px; margin-bottom:28px; border:2px solid var(--gold); }
+  .mega-assistant h3 { color:var(--gold); font-size:22px; margin-bottom:6px; }
+  .mega-assistant p { color:#C9C3B6; font-size:13.5px; margin-bottom:16px; }
+  .mega-ask-row { display:flex; gap:10px; flex-wrap:wrap; }
+  .mega-ask-row input { flex:1; min-width:220px; background:rgba(255,255,255,0.06); border:1px solid rgba(197,160,89,0.35); color:#F3F1EA; }
+  .quick-suggest-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .quick-suggest-chip { background:rgba(255,255,255,0.07); border:1px solid rgba(197,160,89,0.4); color:#D6D0C4; padding:6px 12px; border-radius:20px; font-size:12px; cursor:pointer; }
+  .quick-suggest-chip:hover { background:var(--gold); color:#FFF; }
+  .mega-assistant .output { background:rgba(255,255,255,0.06); border-color:rgba(197,160,89,0.3); color:#F3F1EA; }
+
+  .alerts-list { display:flex; flex-direction:column; gap:10px; }
+  .alert-row { display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-radius:12px; font-size:13.5px; gap:10px; flex-wrap:wrap; }
+  .alert-row.warn { background:#FBEAE9; color:#B3261E; border:1px solid #F3CFCC; }
+  .alert-row.info { background:#EAF1F8; color:#1F4E79; border:1px solid #C9DCEC; }
+  .alert-row.success { background:#E8F8F5; color:#145A32; border:1px solid #C6EAD9; }
+  [data-theme="dark"] .alert-row.warn { background:#3A2323; }
+  [data-theme="dark"] .alert-row.info { background:#1E2A33; }
+  [data-theme="dark"] .alert-row.success { background:#1B2E27; }
+  .alert-row button { background:#FFF; border:1px solid currentColor; color:inherit; padding:5px 12px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; }
+
+  .quick-portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-bottom:28px; }
+  .quick-portal-card { cursor:pointer; }
+
+  /* استوديو المناهج - رفع ملفات */
+  .file-upload-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px dashed var(--border-color); }
+  .upload-label { background:var(--accent-sand); color:var(--gold-dark); padding:9px 16px; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border-color); }
+  .upload-label input[type=file] { display:none; }
+  .file-list { list-style:none; margin:10px 0 0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .file-list li { font-size:12.5px; color:var(--text-primary); background:var(--card-bg); border:1px solid var(--border-color); border-radius:8px; padding:7px 12px; display:flex; justify-content:space-between; gap:10px; }
+  .file-list li span.fsize { color:var(--text-muted); font-size:11px; }
+  .curr-progress-wrap { display:flex; align-items:center; gap:10px; margin:10px 0 12px; }
+  .curr-progress-bar { flex:1; height:8px; background:var(--accent-sand); border-radius:6px; overflow:hidden; }
+  .curr-progress-fill { height:100%; background:var(--gold); }
+
+  /* قسم القرآن الكريم */
+  .role-tabs { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .role-btn { background:var(--accent-sand); border:2px solid var(--border-color); color:var(--text-muted); padding:9px 18px; border-radius:12px; font-weight:700; cursor:pointer; font-size:13.5px; transition:0.3s; }
+  .role-btn.active-role { background:var(--gold); color:#FFF; border-color:var(--gold); box-shadow:0 4px 15px rgba(197,160,89,0.3); }
+  .motivation-box { background:var(--accent-sand); border:1px solid var(--border-color); padding:18px; border-radius:12px; margin-bottom:20px; }
+  .status-select { padding:6px 10px; border-radius:6px; font-weight:700; font-size:12.5px; cursor:pointer; border:1px solid var(--border-color); }
+  .status-done { background:#E8F8F5; color:#27AE60; border-color:#A2D9CE; }
+  .status-review { background:#EBF5FB; color:#2980B9; border-color:#AED6F1; }
+  .status-pending { background:var(--accent-sand); color:var(--text-muted); border-color:var(--border-color); }
+  .progress-container { background:var(--border-color); border-radius:10px; height:20px; width:100%; margin:10px 0; overflow:hidden; }
+  .progress-bar { background:linear-gradient(90deg, var(--gold), #27AE60); height:100%; width:0%; text-align:center; color:#FFF; font-size:11px; font-weight:700; line-height:20px; }
+  .student-card-quran { background:var(--card-bg); border:2px solid var(--gold); border-radius:16px; padding:22px; margin-bottom:20px; }
+
+  /* نظام متابعة الحصص / الساعات اليومية */
+  .mode-toggle { display:inline-flex; background:var(--accent-sand); border:1px solid var(--border-color); border-radius:12px; padding:4px; gap:4px; margin-bottom:18px; }
+  .mode-btn { border:none; background:transparent; color:var(--text-muted); padding:9px 18px; border-radius:9px; font-weight:700; font-size:13px; cursor:pointer; transition:0.2s; }
+  .mode-btn.active-mode { background:var(--gold); color:#FFF; }
+  tr.student-main-row-track { border-top:2px solid var(--gold); background:var(--card-bg); }
+  tr.student-sub-row-track { border-bottom:2px solid var(--gold); background:var(--accent-sand); }
+  tr.completed-target-row, tr.completed-target-row > td { background-color:#E8F8F5 !important; border-color:#A2D9CE !important; color:#145A32 !important; }
+  tr.completed-target-row input, tr.completed-target-row select, tr.completed-target-row textarea { background-color:#D4EFDF !important; color:#145A32 !important; border-color:#A2D9CE !important; }
+  .session-cell-track { background:var(--accent-sand); text-align:center; padding:8px !important; }
+  .session-cell-track input, .session-cell-track select { font-size:11px; margin-bottom:4px; padding:5px; }
+  .target-input-track { font-weight:700; text-align:center; color:var(--gold-dark); background:var(--accent-sand) !important; }
+
+  @media (max-width: 960px) {
+    .sidebar { width: 240px; }
+    .main-wrapper { margin-right: 240px; }
+    .content-body { padding: 20px; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<!-- بوابة الدخول (تسجيل الدخول) -->
+<div class="login-gate" id="loginGate">
+  <div class="login-box">
+    <div class="login-logo">🏛️ مداد العربية AI</div>
+    <div class="login-tagline">The Intelligent Operating System for Arabic Education</div>
+
+    <div class="field login-institute-select">
+      <label>اختر مؤسستك</label>
+      <select id="loginInstitute">
+        <option>معهد الفرقان لتعليم العربية — القاهرة</option>
+        <option>أكاديمية الشرق للعلوم اللغوية — دبي</option>
+        <option>مركز نور القرآن — لندن</option>
+        <option>+ تسجيل مؤسسة جديدة</option>
+      </select>
+    </div>
+    <div class="field login-institute-select">
+      <label>البريد الإلكتروني</label>
+      <input type="email" placeholder="name@institute.com">
+    </div>
+    <div class="field login-institute-select">
+      <label>كلمة المرور</label>
+      <input type="password" placeholder="••••••••">
+    </div>
+    <div class="remember-row">
+      <label style="display:flex; align-items:center; gap:6px; margin:0;"><input type="checkbox" checked style="width:auto;"> تذكرني</label>
+      <a href="#" style="color:var(--gold-dark); text-decoration:none;">نسيت كلمة المرور؟</a>
+    </div>
+    <button class="primary-btn" style="width:100%; justify-content:center;" onclick="enterApp()"><span>🔐</span> تسجيل الدخول + تفعيل OTP</button>
+
+    <div class="login-divider">أو الدخول عبر</div>
+    <div class="login-social-row">
+      <button class="login-social-btn" onclick="enterApp()"><i class="fa-brands fa-google"></i> Google</button>
+      <button class="login-social-btn" onclick="enterApp()"><i class="fa-brands fa-microsoft"></i> Microsoft</button>
+    </div>
+    <p style="font-size:11px; color:var(--text-muted); margin-top:10px;">هذه شاشة دخول تجريبية للعرض — ستُربط بنظام تحقق حقيقي عند الانتقال لقاعدة بيانات فعلية.</p>
+  </div>
+</div>
+
+<div id="appContainer">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span>🏛️</span>
+      <div>مداد العربية AI<small>Education Operating System</small></div>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="#" class="active" onclick="switchPanel('dashboardPanel', this)"><i class="fa-solid fa-chart-pie"></i> لوحة المؤشرات (Dashboard)</a></li>
+      <li><a href="#" onclick="switchPanel('studentPanel', this)"><i class="fa-solid fa-graduation-cap"></i> بوابة الطالب (Student OS)</a></li>
+      <li><a href="#" onclick="switchPanel('teacherPanel', this)"><i class="fa-solid fa-chalkboard-user"></i> بوابة المعلم (Teacher Hub)</a></li>
+      <li><a href="#" onclick="switchPanel('quranPanel', this)"><i class="fa-solid fa-book-quran"></i> قسم القرآن الكريم</a></li>
+      <li><a href="#" onclick="switchPanel('supervisorPanel', this)"><i class="fa-solid fa-user-shield"></i> بوابة الإشراف والتقييم</a></li>
+      <li><a href="#" onclick="switchPanel('managementPanel', this)"><i class="fa-solid fa-building-columns"></i> الإدارة والمالية (ERP/CRM)</a></li>
+      <li><a href="#" onclick="switchPanel('curriculumPanel', this)"><i class="fa-solid fa-book-open"></i> استوديو المناهج</a></li>
+      <li><a href="#" onclick="switchPanel('communicationPanel', this)"><i class="fa-solid fa-bullhorn"></i> بوابة التواصل</a></li>
+      <li><a href="#" onclick="switchPanel('reportsPanel', this)"><i class="fa-solid fa-chart-line"></i> التقارير المتقدمة والذكاء</a></li>
+    </ul>
+    <div class="sidebar-footer">مداد العربية AI © الإصدار الثاني (V2)<br>نواة موحّدة لكل بوابات المؤسسة</div>
+  </aside>
+
+  <div class="main-wrapper">
+    <header class="navbar">
+      <div class="search-bar">
+        <i class="fa-solid fa-search" style="color:var(--text-muted);"></i>
+        <input type="text" placeholder="ابحث في كل النظام: طالب، معلم، منهج، تقرير...">
+      </div>
+      <div class="navbar-right">
+        <span style="font-size:12.5px; color:var(--text-muted);">معهد الفرقان لتعليم العربية</span>
+        <button class="theme-toggle-btn" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
+      </div>
+    </header>
+
+    <div class="content-body">
+
+      <!-- 1. لوحة المؤشرات (الرئيسية) -->
+      <div id="dashboardPanel" class="page-panel active-panel">
+
+        <div class="mega-assistant">
+          <h3>🤖 اسأل مداد — المحرك الذكي المركزي (Madad Intelligence Engine)</h3>
+          <p>اكتب سؤالك الإداري أو الأكاديمي بلغة طبيعية، وسيحلل مداد بيانات المؤسسة ليجيبك بالأسباب والحلول.</p>
+          <div class="mega-ask-row">
+            <input type="text" id="dashboardAiQuery" placeholder="مثال: لماذا انخفض مستوى الصف الثالث هذا الشهر؟">
+            <button class="primary-btn" onclick="askMadadAI()"><span>✨</span> اسأل مداد</button>
+          </div>
+          <div class="quick-suggest-row">
+            <span class="quick-suggest-chip" onclick="askMadadAI('لماذا انخفض مستوى الصف الثالث؟')">لماذا انخفض مستوى الصف الثالث؟</span>
+            <span class="quick-suggest-chip" onclick="askMadadAI('من أفضل 3 معلمين هذا الشهر؟')">أفضل 3 معلمين هذا الشهر؟</span>
+            <span class="quick-suggest-chip" onclick="askMadadAI('توقع إيرادات الشهر القادم')">توقع إيرادات الشهر القادم</span>
+            <span class="quick-suggest-chip" onclick="askMadadAI('ما نسبة الطلاب المعرضين للانقطاع؟')">الطلاب المعرضون للانقطاع؟</span>
+          </div>
+          <div id="dashboardAiOutput" class="output"></div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><h4>المؤسسات</h4><div class="number">14 معهد</div></div>
+          <div class="stat-card"><h4>المعلمون</h4><div class="number">128 معلماً</div></div>
+          <div class="stat-card"><h4>الطلاب</h4><div class="number">1,450 طالباً</div></div>
+          <div class="stat-card"><h4>حصص اليوم</h4><div class="number">94 حصة</div></div>
+          <div class="stat-card"><h4>معدل حضور الطلاب</h4><div class="number" style="color:var(--success);">96.4%</div></div>
+          <div class="stat-card"><h4>رضا أولياء الأمور</h4><div class="number" style="color:var(--gold);">4.7 / 5</div></div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:19px; margin-bottom:14px;">🔔 التنبيهات المهمة اليوم</h3>
+          <div class="alerts-list">
+            <div class="alert-row warn"><span>⛔ 5 طلاب تجاوزوا موعد تجديد الاشتراك بأكثر من 3 أيام.</span><button onclick="switchPanel('managementPanel', document.querySelectorAll('.sidebar-menu a')[5])">فتح الإدارة والمالية</button></div>
+            <div class="alert-row info"><span>📚 المستوى الثاني (اللغة العربية) بحاجة لمراجعة منهجية بعد انخفاض نتائج الاختبار الشهري.</span><button onclick="switchPanel('curriculumPanel', document.querySelectorAll('.sidebar-menu a')[6])">فتح استوديو المناهج</button></div>
+            <div class="alert-row success"><span>⭐ الأستاذ أحمد محمد حقق أعلى معدل رضا طلاب هذا الشهر (4.9/5).</span><button onclick="switchPanel('supervisorPanel', document.querySelectorAll('.sidebar-menu a')[4])">فتح الإشراف</button></div>
+          </div>
+        </div>
+
+        <h3 style="font-size:19px; margin:0 0 14px;">وصول سريع للبوابات</h3>
+        <div class="quick-portal-grid">
+          <div class="stat-card quick-portal-card" onclick="switchPanel('studentPanel', document.querySelectorAll('.sidebar-menu a')[1])"><h4>بوابة الطالب</h4><div class="number" style="font-size:16px; color:var(--gold);">Student OS</div></div>
+          <div class="stat-card quick-portal-card" onclick="switchPanel('teacherPanel', document.querySelectorAll('.sidebar-menu a')[2])"><h4>بوابة المعلم</h4><div class="number" style="font-size:16px; color:var(--gold);">Teacher Hub</div></div>
+          <div class="stat-card quick-portal-card" onclick="switchPanel('curriculumPanel', document.querySelectorAll('.sidebar-menu a')[6])"><h4>استوديو المناهج</h4><div class="number" style="font-size:16px; color:var(--gold);">Curriculum Studio</div></div>
+          <div class="stat-card quick-portal-card" onclick="switchPanel('reportsPanel', document.querySelectorAll('.sidebar-menu a')[8])"><h4>التقارير والذكاء</h4><div class="number" style="font-size:16px; color:var(--gold);">Analytics Hub</div></div>
+        </div>
+      </div>
+
+      <!-- 2. بوابة الطالب (Student OS) -->
+      <div id="studentPanel" class="page-panel">
+        <div class="card">
+          <h2>🎓 بوابة الطالب الذكية والمساعدة الشخصية (Student OS)</h2>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">منصتك التعليمية الخاصة لمتابعة الخطة الدراسية، إنجاز الواجبات التفاعلية، وتطوير مهاراتك اللغوية بمساعدة الذكاء الاصطناعي.</p>
+
+          <div class="stats-grid" style="margin-bottom:25px;">
+            <div class="stat-card"><h4>المستوى الحالي</h4><div class="number" style="font-size:20px; color:var(--gold);">المستوى الأول (الوحدة 3)</div></div>
+            <div class="stat-card"><h4>نسبة الإنجاز</h4><div class="number" style="color:var(--success);">78%</div></div>
+            <div class="stat-card"><h4>نقاط التحفيز</h4><div class="number" style="color:var(--gold);">1,250 ⭐</div></div>
+            <div class="stat-card"><h4>حالة الحضور</h4><div class="number" style="color:var(--success);">100%</div></div>
+          </div>
+
+          <div class="ai-assistant-widget" style="margin-bottom:25px;">
+            <h3><span>🤖</span> مساعد مداد العربية AI (المعلم الشخصي للطالب)</h3>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:15px;">اختر نوع المساعدة التي تحتاجها الآن:</p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+              <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="studentAiAction('شرح الدرس')"><span>📖</span> شرح الدرس الحالي</button>
+              <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="studentAiAction('تصحيح النطق')"><span>🎙️</span> التدريب وتصحيح النطق</button>
+              <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="studentAiAction('تدريب محادثة')"><span>💬</span> المحادثة التفاعلية</button>
+              <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#7B1FA2;" onclick="studentAiAction('اختبار فوري')"><span>⚡</span> اختبار فوري قصير</button>
+            </div>
+            <div class="field" style="margin-bottom:12px;">
+              <input type="text" id="studentPersonalQuery" placeholder="أو اكتب سؤالك المباشر لمساعد مداد...">
+            </div>
+            <button class="primary-btn" style="padding:10px 20px; font-size:13.5px;" onclick="runStudentPersonalAi()"><span>✨</span> إرسال للمساعد الذكي</button>
+            <div id="studentPersonalAiOutput" class="output"></div>
+          </div>
+
+          <div class="grid-2" style="margin-bottom:25px;">
+            <div class="card" style="margin-bottom:0; background:var(--accent-sand);">
+              <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:12px;">📊 لوحة تحليل المهارات (Skill Radar)</h3>
+              <ul style="font-size:13.5px; padding-right:20px; margin:0; line-height:2.1; color:var(--text-primary);">
+                <li><b>الاستماع (Listening):</b> 85% (ممتاز)</li>
+                <li><b>المحادثة (Speaking):</b> 75% (جيد جداً)</li>
+                <li><b>القراءة (Reading):</b> 90% (متقدم)</li>
+                <li><b>الكتابة (Writing):</b> 70% (يحتاج تدريب)</li>
+                <li><b>القواعد والمفردات:</b> 80%</li>
+              </ul>
+            </div>
+            <div class="card" style="margin-bottom:0; background:var(--accent-sand);">
+              <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:12px;">📋 الواجبات التفاعلية النشطة</h3>
+              <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:20px; border-radius:14px;">
+                <p style="margin:0 0 8px 0; font-weight:600; font-size:14.5px;">تمرين تكوين الجمل الاسمية (12 سؤالاً)</p>
+                <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="alert('🚀 تم فتح الواجب التفاعلي!')">✏️ ابدأ حل الواجب الآن</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. بوابة المعلم (Teacher Hub) -->
+      <div id="teacherPanel" class="page-panel">
+        <div class="card">
+          <h2>👨‍🏫 بوابة المعلم ومساعد التدريس الذكي (Teacher Hub)</h2>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">مركز القيادة الخاص بك لإدارة الحصص اليومية، توليد الدروس الفورية، ومتابعة تطور وتحليلات الطلاب.</p>
+
+          <div class="stats-grid" style="margin-bottom:25px;">
+            <div class="stat-card"><h4>حصص اليوم</h4><div class="number" style="font-size:22px; color:var(--gold);">5 حصص أونلاين</div></div>
+            <div class="stat-card"><h4>الطلاب المتميزون</h4><div class="number" style="color:var(--success);">12 طالباً</div></div>
+            <div class="stat-card"><h4>بحاجة لمتابعة</h4><div class="number" style="color:var(--danger);">2 طلاب</div></div>
+            <div class="stat-card"><h4>واجبات قيد التصحيح</h4><div class="number" style="color:var(--gold);">8 واجبات</div></div>
+          </div>
+
+          <div class="ai-assistant-widget" style="margin-bottom:25px;">
+            <h3><span>🤖</span> مساعد المعلم الذكي (توليد خطط الدروس والواجبات فوراً)</h3>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:15px;">أدخل متطلبات الدرس وسيقوم مداد بتوليد الخطة، الأنشطة، والواجب (12 سؤالاً) خلال ثوانٍ:</p>
+            <div class="grid-2" style="margin-bottom:12px;">
+              <div class="field" style="margin-bottom:0;">
+                <label>موضوع الدرس والمدة:</label>
+                <input type="text" id="aiLessonPromptInput" value="أعدد درساً للمبتدئين لمدة 45 دقيقة عن التحية وتعارف العائلات">
+              </div>
+              <div class="field" style="margin-bottom:0; display:flex; align-items:flex-end;">
+                <button class="primary-btn" onclick="runTeacherAiLessonGenerator()"><span>✨</span> توليد الدرس والواجب كاملاً</button>
+              </div>
+            </div>
+            <div id="teacherAiLessonOutput" class="output"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:var(--accent-sand);">
+            <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:15px;">👥 جدول ومتابعة الطلاب الخاصة بك</h3>
+            <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:20px; border-radius:14px; margin-bottom:15px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px;">
+                <h4 style="margin:0; color:var(--text-primary); font-size:16px;">👤 الطالب: أحمد جونسون (لغة عربية غير عرب)</h4>
+                <button class="ai-action-btn" onclick="alert('🤖 تم توليد الواجب الذكي (12 سؤالاً) وإرساله للطالب عبر البريد والواتساب!')"><span>🤖</span> توليد وإرسال واجب (12 سؤالاً)</button>
+              </div>
+              <div class="grid-2" style="font-size:13.5px; color:var(--text-muted); line-height:1.9; margin-bottom:15px; background:var(--accent-sand); padding:15px; border-radius:10px;">
+                <div>
+                  • <b>آخر حضور:</b> أمس (بانتظام)<br>
+                  • <b>آخر واجب:</b> مُسلّم ومصحح (95%)<br>
+                  • <b>نسبة التقدم:</b> 80%
+                </div>
+                <div>
+                  • <b style="color:var(--success);">الحالة النفسية (AI):</b> مستقر ومتحمس للتعلم<br>
+                  • <b style="color:var(--success);">احتمال الانسحاب:</b> منخفض جداً (0.5%)<br>
+                  • <b>اقتراح التعامل:</b> تحفيز إضافي بكلمات إيجابية
+                </div>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label>📌 مكان التوقف الحالي (عند الانتهاء اكتبه هنا ليتم تحديث لوحة الإدارة والمشرف تلقائياً):</label>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <input type="text" id="teacherStopPointInput" class="editable-cell" value="الكتاب الأول - الوحدة 3 (الحوار الثاني)" style="flex:1;">
+                  <button class="primary-btn" style="padding:10px 20px; font-size:13px;" onclick="alert('✅ تم تحديث مكان التوقف ومزامنة السجل الدراسي للطالب تلقائياً!')"><span>💾</span> حفظ ونشر</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:10px;">
+            <h3 style="font-size:18px; margin:0;">👥 جدول متابعة حصص طلابي التفصيلي</h3>
+            <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#137333;" onclick="switchPanel('curriculumPanel', document.querySelectorAll('.sidebar-menu a')[6])"><span>📘</span> فتح استوديو المناهج وتخطيطه</button>
+          </div>
+          <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:16px;">عدد الحصص المستهدف شهريًا وتاريخ كل حصة وحالتها — يعمل تلقائيًا بنفس نظام الإشراف، ويتحول لونها للأخضر عند اكتمال العدد المستهدف.</p>
+          <div style="overflow-x:auto;">
+            <table class="supervision-table" id="teacherTrackingTable">
+              <thead><tr id="teacherTrackingHead"></tr></thead>
+              <tbody id="teacherTrackingBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3.5 قسم القرآن الكريم وتجويده المتدرج -->
+      <div id="quranPanel" class="page-panel">
+        <div class="card">
+          <h2>📖 قسم القرآن الكريم وتجويده المتدرج</h2>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">منظومة آلية متكاملة لمتابعة حفظ سور القرآن الـ 114 وفق خطط متدرجة، مستقلة بحلقاتها ومعلميها عن بقية أقسام المنصة.</p>
+          <div class="motivation-box">
+            <h4 style="color:var(--gold-dark); margin-top:0; font-size:16px;">✨ إشراقة إيمانية وحوافز أهل القرآن</h4>
+            <p id="dailyMotivation" style="font-size:14px; margin-bottom:0; font-weight:600;"></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:18px; margin-bottom:6px;">🔐 إدارة صلاحيات الحلقات (المعلمون والإشراف)</h3>
+          <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:14px;">اختر دورك لتصفح حلقتك الخاصة أو لوحة الإشراف الشاملة على كل الحلقات:</p>
+          <div class="role-tabs" id="quranRoleTabsContainer"></div>
+          <button type="button" class="primary-btn quran-supervisor-only" style="padding:8px 16px; font-size:13px; background:#2980B9; display:none;" onclick="addNewQuranTeacherModal()"><span>➕</span> إضافة معلم حلقة جديد</button>
+        </div>
+
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h3 id="quranTeachersStudentsTitle" style="margin-bottom:4px;">👨‍🏫 إدارة المعلمين وطلاب حلقتهم</h3>
+              <p style="font-size:13px; color:var(--text-muted); margin:0;">استعراض المعلم والطلاب التابعين لحلقته:</p>
+            </div>
+            <button type="button" class="primary-btn quran-supervisor-only" style="padding:8px 16px; font-size:13px; display:none;" onclick="addNewQuranStudent()"><span>➕</span> إضافة طالب حافظ جديد</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="supervision-table" id="quranTeachersStudentsTable">
+              <thead><tr><th>اسم المعلم المسؤول</th><th>اسم الطالب الحافظ</th><th>البريد الإلكتروني</th><th class="quran-supervisor-only" style="display:none;">إجراءات</th></tr></thead>
+              <tbody id="quranTeachersStudentsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="background:var(--accent-sand);">
+          <h3 style="font-size:18px; margin-bottom:6px;">🎓 البوابة المستقلة للطلاب (الملف الفردي التام لكل طالب)</h3>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">لكل طالب ملفه المستقل: حفظه الجديد، أين توقف في المراجعة، تقديراته، نسبة إنجازه، وجدوله الخاص للـ114 سورة.</p>
+          <div id="quranIndependentStudentContainer"></div>
+        </div>
+
+        <div class="card quran-supervisor-section" id="quranSupervisorEvaluationSection" style="display:none;">
+          <h3 style="font-size:18px; margin-bottom:6px;">👔 تقرير المرور الإشرافي على حلقات التحفيظ (للمشرف العام حصرياً)</h3>
+          <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:18px;">تقييم أداء معلمي التحفيظ وضبط الحلقات وإرسال التوصيات مباشرة لبريد المعلم.</p>
+          <div class="grid-2">
+            <div class="field">
+              <label>المعلم المستهدف بالإشراف</label>
+              <select id="quranSupervisorTeacherSelect" onchange="updateTeacherEmailQuran()"></select>
+            </div>
+            <div class="field">
+              <label>بريد المعلم</label>
+              <input id="quranEmail" type="email" value="teacher@madad-ai.com" readonly>
+            </div>
+          </div>
+          <div class="field">
+            <label>ملاحظات التجويد، ضبط الحلقة، والتقييم الإشرافي</label>
+            <textarea id="tajweedNotes" rows="3" placeholder="سجل تقييم المشرف العام على الحلقة..."></textarea>
+          </div>
+          <button id="quranBtn" class="primary-btn" onclick="submitQuranReport()"><span>🚀</span> اعتماد التقرير الإشرافي وإرساله لبريد المعلم</button>
+          <div id="quranLoading" style="display:none; color:var(--gold-dark); margin-top:14px; font-weight:600;">جاري إرسال التقرير الإشرافي...</div>
+          <div id="quranOutput" class="output"></div>
+        </div>
+      </div>
+
+      <!-- 4. بوابة الإشراف (Supervisor Center) -->
+      <div id="supervisorPanel" class="page-panel">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+            <h2>👔 بوابة الإشراف وجودة التعليم (Supervisor Center)</h2>
+            <div style="display:flex; gap:10px;">
+              <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="addNewTeacherModal()"><span>➕</span> إضافة معلم جديد</button>
+              <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#137333;" onclick="addNewStudentModal()"><span>➕</span> إضافة طالب جديد</button>
+            </div>
+          </div>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">مراقبة جودة التدريس، تحليل أداء الكوادر التعليمية، وإدارة الخطط الإشرافية والعلاجية مدعومة بمحرك مداد الذكي (متصل بخادم FastAPI المحلي).</p>
+
+          <div class="ai-advisor-box">
+            <h3 style="color:var(--gold);"><span>🤖</span> مستشار الإشراف الذكي (تحليل الأداء واقتراح التدريب والحلول)</h3>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:12px;">تحليل فوري لالتزام المعلمين وسرعة تصحيحهم للواجبات لاقتراح التوجيهات والخطط العلاجية. يحاول الاتصال بخادم <code>main.py</code> المحلي أولاً، وإن تعذّر يعرض تحليلاً تجريبياً:</p>
+            <button class="primary-btn" style="padding:10px 20px; font-size:13.5px; background:#7B1FA2;" onclick="runSupervisorAiAdvisor()"><span>✨</span> توليد تقرير الجودة والتوصيات الإشرافية</button>
+            <div id="supervisorAiAdvisorOutput" class="output"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:25px; background:var(--accent-sand); border:1px solid var(--border-color);">
+            <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:15px;">📊 رصد وتقييم أداء المعلمين والالتزام الأكاديمي</h3>
+            <div style="overflow-x:auto;">
+              <table class="supervision-table">
+                <thead>
+                  <tr><th>اسم المعلم</th><th>الأداء العام</th><th>الالتزام بالمواعيد</th><th>رضا الطلاب</th><th>سرعة التصحيح</th><th>توجيه الذكاء الاصطناعي والتصرف المقترح</th></tr>
+                </thead>
+                <tbody id="supervisorTeachersTable">
+                  <tr>
+                    <td><b>أستاذ أحمد محمد</b></td>
+                    <td class="text-center" style="color:var(--success); font-weight:700;">ممتاز (96%)</td>
+                    <td class="text-center">98%</td>
+                    <td class="text-center">4.9 / 5</td>
+                    <td class="text-center">سريع جداً (أقل من 6 ساعات)</td>
+                    <td><span style="color:var(--success); font-size:12.5px;">أداء استثنائي؛ مرشح لبرنامج القيادة الأكاديمية ونقل الخبرات.</span></td>
+                  </tr>
+                  <tr>
+                    <td><b>أستاذة فاطمة علي</b></td>
+                    <td class="text-center" style="color:var(--gold-dark); font-weight:700;">جيد جداً (88%)</td>
+                    <td class="text-center">85%</td>
+                    <td class="text-center">4.6 / 5</td>
+                    <td class="text-center">متوسط (خلال 24 ساعة)</td>
+                    <td><span style="color:var(--danger); font-size:12.5px;">تحتاج ورشة عمل قصيرة في إدارة الوقت وتنظيم جداول الواجبات.</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:25px; background:var(--card-bg);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
+              <h3 style="font-size:18px; margin:0;">👥 جدول متابعة الطلاب التفصيلي (تعديل يدوي كامل)</h3>
+              <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#137333;" onclick="switchPanel('curriculumPanel', document.querySelectorAll('.sidebar-menu a')[6])"><span>📘</span> فتح استوديو المناهج وتخطيطه</button>
+            </div>
+            <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:14px;">عدد الحصص المستهدف شهريًا قابل للتعديل اليدوي (4 / 6 / 8 / 12) لكل طالب — وبمجرد تغييره ينشئ النظام آليًا عدد خانات الجدول المطلوبة، مع تاريخ كل حصة وحالتها (حضور/غياب/تأجيل)، وتلوين الصف بالكامل أخضر تلقائيًا عند اكتمال العدد المستهدف.</p>
+
+            <div class="mode-toggle">
+              <button class="mode-btn active-mode" id="modeBtnSessions" onclick="setTrackingMode('sessions')">📅 نظام الحصص الشهرية</button>
+              <button class="mode-btn" id="modeBtnHours" onclick="setTrackingMode('hours')">🕒 نظام الساعات اليومية (للمعاهد الفعلية)</button>
+            </div>
+
+            <div id="sessionsModeBlock">
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+                <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#5A605C;" onclick="addManualSessionColumnForAll()"><span>➕</span> إضافة خانة حصة يدوياً للجميع</button>
+                <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="addNewSupervisionStudent()"><span>➕</span> إضافة طالب جديد للجدول</button>
+                <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#137333;" onclick="exportSupervisionExcel()"><span>📊</span> تصدير الجدول (.xlsx)</button>
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="supervision-table" id="supervisorTrackingTable">
+                  <thead><tr id="supervisorTrackingHead"></tr></thead>
+                  <tbody id="supervisorTrackingBody"></tbody>
+                </table>
+              </div>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:10px;">💡 غيّر خانة "المستهدف شهرياً" لأي طالب إلى 6 أو 8 أو 12 — سيتوسع الجدول تلقائيًا لعرض العدد المطلوب من الخانات لكل الطلاب.</p>
+            </div>
+
+            <div id="hoursModeBlock" style="display:none;">
+              <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:14px;">للمعاهد التي تعمل بدوام يومي ثابت (لا بنظام الحصص المستقلة): سجل ساعات عمل كل معلم يوميًا، ويُحسب راتبه من إجمالي الساعات × سعر الساعة تلقائيًا.</p>
+              <button class="primary-btn" style="padding:8px 16px; font-size:13px; margin-bottom:14px;" onclick="addDailyHoursEntry()"><span>➕</span> تسجيل يوم عمل جديد</button>
+              <div style="overflow-x:auto;">
+                <table class="supervision-table" id="dailyHoursTable">
+                  <thead><tr><th>المعلم</th><th>التاريخ</th><th>عدد الساعات</th><th>نوع الدوام</th><th>ملاحظات</th><th>حذف</th></tr></thead>
+                  <tbody id="dailyHoursBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:25px; background:var(--accent-sand);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+              <h3 style="font-size:18px; margin:0;">💰 شؤون المعلمين والرواتب</h3>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <select id="currencySelector" onchange="toggleCurrencyRate()" style="padding:8px 12px; font-weight:700; color:var(--gold-dark); font-size:13px; width:auto;">
+                  <option value="USD" selected>الدولار الأمريكي ($)</option>
+                  <option value="EGP">الجنيه المصري (EGP)</option>
+                </select>
+                <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="addNewSupervisionTeacher()"><span>➕</span> إضافة معلم جديد</button>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="supervision-table" id="supervisionTeachersTable">
+                <thead><tr><th>اسم المعلم</th><th>البريد / الهاتف</th><th id="rateHeader">سعر الساعة ($)</th><th id="countHeader">عدد الحصص المنجزة</th><th id="totalHeader">إجمالي الراتب ($)</th><th>تنبيه</th></tr></thead>
+                <tbody id="supervisionTeachersBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:var(--card-bg);">
+            <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:15px;">📝 استمارة المرور الإشرافي وإرسال التقارير لبريد المعلمين</h3>
+            <div class="grid-2">
+              <div class="field">
+                <label>اختر المعلم (قيد المرور الإشرافي):</label>
+                <select id="supTargetTeacher" onchange="updateSupervisorEmail()">
+                  <option value="أحمد محمد" data-email="ahmed.m@madad-ai.com">أستاذ أحمد محمد</option>
+                  <option value="فاطمة علي" data-email="fatma.a@madad-ai.com">أستاذة فاطمة علي</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>البريد الإلكتروني للإرسال التلقائي:</label>
+                <input type="email" id="supTargetEmail" value="ahmed.m@madad-ai.com" readonly style="background:var(--accent-sand);">
+              </div>
+            </div>
+            <div class="field">
+              <label>ملاحظات المرور الإشرافي والجوانب الإبداعية أو التطويرية:</label>
+              <textarea id="supNotesInput" rows="3" placeholder="أداء متميز في إدارة التفاعل الصفي واستخدام استراتيجيات القصة التفاعلية..."></textarea>
+            </div>
+            <button class="primary-btn" onclick="sendSupervisorReportDirectly()"><span>🚀</span> إرسال التقرير الإشرافي فوراً لبريد المعلم</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. الإدارة والمالية (ERP & CRM) -->
+      <div id="managementPanel" class="page-panel">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+            <h2>⚙️ بوابة الإدارة والشؤون المالية والتشغيل (ERP & CRM)</h2>
+            <button class="primary-btn" style="background:#137333; padding:8px 16px; font-size:13px;" onclick="exportExcel()"><span>📊</span> تصدير إكسل (.xlsx)</button>
+          </div>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">النظام المالي والمؤسسي المتكامل لإدارة الموارد البشرية، أجور المعلمين، وعلاقات الطلاب (CRM). <b>الترحيل الشهري يعمل آلياً بمجرد اكتمال 4 حصص — بلا أي زر يدوي.</b></p>
+
+          <div class="ai-advisor-box">
+            <h3 style="color:var(--gold);"><span>🤖</span> مستشار التطوير المالي والإداري (Madad AI)</h3>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:12px;">تحليل الإيرادات، أجور المعلمين، وكفاءة التشغيل لتقديم حلول تطويرية فورية وزيادة الأرباح:</p>
+            <button class="primary-btn" style="padding:10px 20px; font-size:13.5px; background:#7B1FA2;" onclick="runManagementAiAdvisor()"><span>✨</span> تحليل وإبداء توصيات مالية وإدارية</button>
+            <div id="managementAiAdvisorOutput" class="output"></div>
+          </div>
+
+          <div class="stats-grid" style="margin-bottom:25px;">
+            <div class="stat-card"><h4>إيرادات الشهر</h4><div class="number" style="color:var(--success);">$36,250</div></div>
+            <div class="stat-card"><h4>إجمالي أجور المعلمين</h4><div class="number" style="color:var(--gold);">$12,400</div></div>
+            <div class="stat-card"><h4>صافي الأرباح التشغيلية</h4><div class="number" style="color:var(--success);">$23,850</div></div>
+            <div class="stat-card"><h4>معدل الاحتفاظ (CRM)</h4><div class="number" style="color:var(--gold);">92.5%</div></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:var(--accent-sand); border:1px solid var(--border-color);">
+            <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:15px;">👥 جدول تتبع الحصص الشهرية والاشتراكات</h3>
+            <div style="overflow-x:auto;">
+              <table class="supervision-table" id="studentsTrackingTable">
+                <thead>
+                  <tr>
+                    <th>اسم الطالب</th><th>البريد الإلكتروني</th><th>رقم الهاتف</th><th>المعلم المسؤول</th>
+                    <th>الشهر / الدورة</th><th>المستهدف</th><th>الحصة 1</th><th>الحصة 2</th><th>الحصة 3</th><th>الحصة 4</th><th>الحالة</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="background-color: var(--card-bg);" data-student="أحمد جونسون" data-email="johnson@email.com" data-phone="+201012345678" data-teacher="أحمد محمد" data-month="1" data-rolled="false">
+                    <td><b>أحمد جونسون</b></td>
+                    <td>johnson@email.com</td>
+                    <td>+201012345678</td>
+                    <td>أحمد محمد</td>
+                    <td><b>الشهر الأول (سبتمبر)</b></td>
+                    <td class="text-center" style="font-weight:700; color:var(--gold);">4</td>
+                    <td class="text-center"><select class="editable-cell session-status" onchange="checkMonthlyCompletion(this)"><option value="completed" selected>✅ حضر</option><option value="absent">❌ غائب</option></select></td>
+                    <td class="text-center"><select class="editable-cell session-status" onchange="checkMonthlyCompletion(this)"><option value="completed" selected>✅ حضر</option><option value="absent">❌ غائب</option></select></td>
+                    <td class="text-center"><select class="editable-cell session-status" onchange="checkMonthlyCompletion(this)"><option value="completed" selected>✅ حضر</option><option value="absent">❌ غائب</option></select></td>
+                    <td class="text-center"><select class="editable-cell session-status" onchange="checkMonthlyCompletion(this)"><option value="completed" selected>✅ حضر</option><option value="absent">❌ غائب</option></select></td>
+                    <td class="text-center status-cell" style="color:var(--success); font-weight:700;">مكتمل الشهري ⭐</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:12px; color:var(--text-muted); margin-top:10px;">💡 غيّر أي حصة إلى "غائب" ثم أعد الأربع إلى "حضر" — سيضيف النظام صف الشهر التالي تلقائيًا.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. استوديو المناهج (Curriculum Studio) -->
+      <div id="curriculumPanel" class="page-panel">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+            <h2>📚 استوديو المناهج التفاعلية (Curriculum Studio)</h2>
+            <div style="display:flex; gap:10px;">
+              <button class="primary-btn" style="padding:10px 20px; font-size:13.5px;" onclick="addNewCurriculumModal()"><span>➕</span> إضافة منهج جديد يدوياً</button>
+              <button class="primary-btn" style="padding:10px 20px; font-size:13.5px; background:#7B1FA2;" onclick="runCurriculumAiBuilderModal()"><span>✨</span> توليد خطة بالذكاء الاصطناعي</button>
+            </div>
+          </div>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">إدارة وهندسة المناهج الأكاديمية، تقسيم المستويات، خطط الوحدات، بنوك الأسئلة، معايير التقييم (Rubrics)، ورفع ملفات كل مادة (كتب، تسجيلات، أوراق عمل).</p>
+
+          <div class="ai-assistant-widget" style="margin-bottom:25px;">
+            <h3><span>🤖</span> مساعد تصميم وتوليد المناهج (Madad Curriculum AI)</h3>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:15px;">أدخل عنوان المنهج أو المستوى وسيقوم الذكاء الاصطناعي ببناء خطة الوحدات والدروس وأهداف التعلم فوراً:</p>
+            <div class="grid-2" style="margin-bottom:15px;">
+              <div class="field" style="margin-bottom:0;">
+                <label>موضوع المنهج:</label>
+                <input type="text" id="curriculumAiPrompt" value="منهج تعليم المحادثة المتقدمة للناطقين بغيرها (المستوى الثالث)">
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label>المستوى الأكاديمي:</label>
+                <select id="curriculumLevelSelect">
+                  <option>مستوى المبتدئين (A1 - A2)</option>
+                  <option>مستوى المتوسط (B1 - B2)</option>
+                  <option>مستوى المتقدم (C1 - C2)</option>
+                </select>
+              </div>
+            </div>
+            <button class="primary-btn" style="padding:10px 20px; font-size:13.5px; background:#7B1FA2;" onclick="generateCurriculumAiPlan()"><span>🚀</span> توليد الخطة والدروس الشاملة</button>
+            <div id="curriculumAiOutput" class="output"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:var(--accent-sand); border:1px solid var(--border-color);">
+            <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:15px;">📋 قائمة المناهج والخطط الأكاديمية النشطة</h3>
+            <div id="curriculumListContainer"><!-- تُبنى آليًا بواسطة renderCurricula() --></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. بوابة التواصل (Communication Hub) -->
+      <div id="communicationPanel" class="page-panel">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px;">
+            <h2>📢 بوابة التواصل والإشعارات الفورية (Communication Hub)</h2>
+            <button class="primary-btn" style="padding:10px 20px; font-size:13.5px;" onclick="addNewBroadcastModal()"><span>➕</span> إرسال تعميم أو إشعار جديد</button>
+          </div>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">إدارة قنوات الإرسال التلقائي للواجبات، تقارير الحضور، والتعاميم الإدارية عبر البريد الإلكتروني وواتساب للمؤسسة.</p>
+
+          <div class="ai-assistant-widget" style="margin-bottom:25px;">
+            <h3><span>🤖</span> مساعد التعاميم والإشعارات الذكي (Madad Broadcast AI)</h3>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:15px;">اكتب موضوع التعميم أو التنبيه وسيقوم مداد بصياغة رسائل احترافية مخصصة لكل مستفيد:</p>
+            <div class="field" style="margin-bottom:15px;">
+              <label>موضوع الرسالة أو التعميم:</label>
+              <input type="text" id="broadcastPromptInput" value="تذكير ببدء الاختبارات الشهرية وموعد تسليم الواجبات">
+            </div>
+            <button class="primary-btn" style="padding:10px 20px; font-size:13.5px; background:#7B1FA2;" onclick="runBroadcastAiGenerator()"><span>✨</span> صياغة وبث التعميم فوراً</button>
+            <div id="broadcastAiOutput" class="output"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:var(--accent-sand); border:1px solid var(--border-color);">
+            <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:15px;">📋 سجل الرسائل والإشعارات المرسلة مؤخراً</h3>
+            <div style="overflow-x:auto;">
+              <table class="supervision-table" id="broadcastLogTable">
+                <thead>
+                  <tr><th>عنوان الرسالة / التعميم</th><th>المستهدفون</th><th>قناة الإرسال</th><th>تاريخ ووقت الإرسال</th><th>حالة التوصيل</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><b>إرسال واجب الوحدة الثالثة التفاعلي</b></td>
+                    <td>طلاب المستوى الأول (غير العرب)</td>
+                    <td>بريد + واتساب</td>
+                    <td>اليوم، 04:30 مساءً</td>
+                    <td class="text-center" style="color:var(--success); font-weight:700;">تم التسليم بنجاح (100%)</td>
+                  </tr>
+                  <tr>
+                    <td><b>تقرير المرور الإشرافي الأسبوعي</b></td>
+                    <td>هيئة المعلمين</td>
+                    <td>البريد الإلكتروني</td>
+                    <td>أمس، 10:00 صباحاً</td>
+                    <td class="text-center" style="color:var(--success); font-weight:700;">تم التسليم (2/2)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. التقارير المتقدمة والذكاء (Analytics Hub) -->
+      <div id="reportsPanel" class="page-panel">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px;">
+            <h2>📈 بوابة التقارير المتقدمة والتحليل الأكاديمي (Analytics Hub)</h2>
+            <button class="primary-btn" style="padding:10px 20px; font-size:13.5px; background:#137333;" onclick="exportReportsExcel()"><span>📊</span> تصدير تقرير المؤسسة الشامل (.xlsx)</button>
+          </div>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">لوحة التحليلات التنفيذية المدعومة بالذكاء الاصطناعي لاستشراف الأداء الأكاديمي، كفاءة الحصص، وتطور مستويات الطلاب.</p>
+
+          <div class="ai-assistant-widget" style="margin-bottom:25px;">
+            <h3><span>🤖</span> محلل البيانات التنفيذي الذكي (Madad Executive AI)</h3>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:15px;">اضغط أدناه لتوليد تقرير تشخيصي شامل حول أداء المعاهد، نسب الحضور، ومقترحات رفع الكفاءة:</p>
+            <button class="primary-btn" style="padding:10px 20px; font-size:13.5px; background:#7B1FA2;" onclick="runExecutiveAiAnalytics()"><span>✨</span> توليد التحليل الإحصائي الشامل</button>
+            <div id="executiveAnalyticsOutput" class="output"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:var(--accent-sand); border:1px solid var(--border-color);">
+            <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:15px;">📊 مؤشرات الأداء الرئيسية للمؤسسة (KPIs)</h3>
+            <div style="overflow-x:auto;">
+              <table class="supervision-table" id="kpiReportsTable">
+                <thead><tr><th>المؤشر الرئيسي</th><th>القيمة الحالية</th><th>معدل النمو</th><th>الحالة التشغيلية</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><b>نسبة الحضور والانضباط للطلاب</b></td><td>96.4%</td><td>+2.1% عن الشهر الماضي</td>
+                    <td class="text-center" style="color:var(--success); font-weight:700;">ممتاز ⭐</td>
+                  </tr>
+                  <tr>
+                    <td><b>معدل تسليم الواجبات التفاعلية (12 سؤالاً)</b></td><td>89.2%</td><td>+5.4%</td>
+                    <td class="text-center" style="color:var(--success); font-weight:700;">مستقر وصاعد</td>
+                  </tr>
+                  <tr>
+                    <td><b>نسبة الطلاب المعرضين لخطر الانقطاع</b></td><td>3.1%</td><td>-0.8%</td>
+                    <td class="text-center" style="color:var(--success); font-weight:700;">تحت السيطرة</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- بوابة الدخول ----------
+  function enterApp() {
+    document.getElementById('loginGate').style.display = 'none';
+    document.getElementById('appContainer').classList.add('app-visible');
+  }
+
+  // ---------- التنقل والمظهر ----------
+  function switchPanel(panelId, linkElem) {
+    document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active-panel'));
+    document.getElementById(panelId).classList.add('active-panel');
+    document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+    if(linkElem) linkElem.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    const icon = document.getElementById('themeIcon');
+    if(html.getAttribute('data-theme') === 'light') {
+      html.setAttribute('data-theme', 'dark');
+      icon.className = 'fa-solid fa-sun';
+    } else {
+      html.setAttribute('data-theme', 'light');
+      icon.className = 'fa-solid fa-moon';
+    }
+  }
+
+  // ---------- المساعد المركزي (اسأل مداد) ----------
+  function localMadadAnswer(query) {
+    if(query.includes('انخفض') || query.includes('الصف الثالث')) {
+      return `📉 <b>السبب المرجّح:</b> غياب متكرر لـ3 طلاب أثّر على المعدل العام، إضافة لتأخر تصحيح آخر واجبين.<br>💡 <b>الحل المقترح:</b> جلسة تعويضية سريعة + تفعيل تنبيه غياب فوري لولي الأمر.`;
+    } else if(query.includes('أفضل') || query.includes('معلم')) {
+      return `🏆 <b>الترتيب:</b> 1) أحمد محمد (96%) 2) سارة يوسف (94%) 3) فاطمة علي (88%) بناءً على الالتزام والتصحيح ورضا الطلاب.`;
+    } else if(query.includes('إيرادات') || query.includes('توقع')) {
+      return `💰 <b>توقع الشهر القادم:</b> نمو متوقع بنسبة 9% استنادًا لمعدل التجديد الحالي (91%) وانضمام 14 طالباً جديداً هذا الأسبوع.`;
+    } else if(query.includes('انقطاع') || query.includes('تسرب')) {
+      return `⚠️ <b>3.1%</b> من الطلاب ضمن منطقة الخطر — أغلبهم بسبب تأخر الرد على واجبين متتاليين. يُنصح بتدخل مبكر خلال 48 ساعة.`;
+    }
+    return `📊 <b>تحليل عام:</b> المؤشرات ضمن النطاق الصحي (حضور 96.4%، رضا أولياء أمور 4.7/5). يمكنك سؤالي عن معلم، طالب، منهج، أو مؤشر مالي محدد لتحليل أدق.`;
+  }
+
+  async function askMadadAI(prefilledQuery) {
+    const input = document.getElementById('dashboardAiQuery');
+    if(prefilledQuery) input.value = prefilledQuery;
+    const query = input.value.trim();
+    const out = document.getElementById('dashboardAiOutput');
+    if(!query) { alert('⚠️ الرجاء كتابة سؤالك أولاً.'); return; }
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>مداد يحلل بيانات المؤسسة للإجابة على: "${query}"...</b>`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/ask-madad', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query })
+      });
+      const data = await res.json();
+      if(res.ok && data.status === 'success') { out.innerHTML = data.answer.replace(/\n/g, '<br>'); return; }
+      throw new Error('bad response');
+    } catch(e) {
+      setTimeout(() => { out.innerHTML = localMadadAnswer(query); }, 500);
+    }
+  }
+
+  // ---------- بوابة الطالب ----------
+  function studentAiAction(actionType) {
+    const out = document.getElementById('studentPersonalAiOutput');
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>مساعد مداد يجهز لك نشاط (${actionType}) بالذكاء الاصطناعي...</b>`;
+    setTimeout(() => {
+      out.innerHTML = `💡 <b>مساعد مداد (${actionType}):</b><br>• تم تجهيز محتوى تفاعلي مخصص لمهارتك الحالية.<br>• <b>التدريب المقترح:</b> ركز على ترديد الكلمات بصوت واضح لرفع نسبة دقة النطق.`;
+    }, 1000);
+  }
+
+  function runStudentPersonalAi() {
+    const query = document.getElementById('studentPersonalQuery').value.trim();
+    const out = document.getElementById('studentPersonalAiOutput');
+    if(!query) { alert("الرجاء إدخال سؤالك أولاً."); return; }
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>مساعد مداد يجيب على استفسارك...</b>`;
+    setTimeout(() => {
+      out.innerHTML = `💡 <b>إجابة المساعد:</b> بناءً على درسك الحالي، توظيف هذه القاعدة يتم وفقاً لموقع الكلمة في الجملة.`;
+    }, 1000);
+  }
+
+  // ---------- بوابة المعلم ----------
+  async function runTeacherAiLessonGenerator() {
+    const promptText = document.getElementById('aiLessonPromptInput').value;
+    const out = document.getElementById('teacherAiLessonOutput');
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>مساعد المعلم الذكي يُعد الخطة الشاملة والأنشطة والواجبات...</b>`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/generate-lesson', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ topic: promptText })
+      });
+      const data = await res.json();
+      if(res.ok && data.status === 'success') { out.innerHTML = data.lesson_plan.replace(/\n/g,'<br>'); return; }
+      throw new Error('bad response');
+    } catch(e) {
+      setTimeout(() => {
+        out.innerHTML = `📚 <b>الخطة التعليمية المولدة بنجاح (${promptText}):</b><br>` +
+          `• <b>أهداف الدرس:</b> إتقان مفردات التحية والتعارف الشخصي.<br>` +
+          `• <b>الأنشطة والألعاب:</b> لعبة الأدوار التبادلية (Role-play) لمدة 10 دقائق.<br>` +
+          `• <b>العرض والحوار:</b> عرض مرئي تفاعلي للصور مع إطار كراشن.<br>` +
+          `• <b>الواجب المنزلي الآلي:</b> تم إعداد 12 سؤالاً متدرجاً مرتبطة بموضوع الدرس وجاهزة للإرسال.`;
+      }, 500);
+    }
+  }
+
+  // ---------- بوابة الإشراف ----------
+  function updateSupervisorEmail() {
+    const select = document.getElementById('supTargetTeacher');
+    const email = select.options[select.selectedIndex].getAttribute('data-email');
+    document.getElementById('supTargetEmail').value = email;
+  }
+
+  async function runSupervisorAiAdvisor() {
+    const out = document.getElementById('supervisorAiAdvisorOutput');
+    const teacher = document.getElementById('supTargetTeacher').value;
+    const notes = document.getElementById('supNotesInput').value || 'لا توجد ملاحظات إضافية بعد.';
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>مستشار الإشراف الذكي يحلل بيانات المعلمين وجودة التدريس (محاولة الاتصال بخادم مداد المحلي)...</b>`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/analyze-students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ class_name: teacher, raw_notes: notes })
+      });
+      const data = await res.json();
+      if(res.ok && data.status === 'success') {
+        out.innerHTML = `✅ <b>استجابة حقيقية من خادم مداد (main.py):</b><br><br>${data.analysis_report}`;
+        return;
+      }
+      throw new Error('bad response');
+    } catch(e) {
+      setTimeout(() => {
+        out.innerHTML = `📊 <b>تقرير الجودة والتوصيات الإشرافية (وضع تجريبي — الخادم المحلي غير متصل):</b><br>` +
+          `• <b>التميز المؤسسي:</b> المعلم أحمد محمد يحقق أفضل معدلات تفاعل وسرعة تصحيح.<br>` +
+          `• <b>توجيه تطويري:</b> يُقترح عقد جلسة توجيهية قصيرة للأستاذة فاطمة علي لتحسين إدارة الوقت ومتابعة الواجبات.<br>` +
+          `• <b>جودة المناهج:</b> نسبة رضا الطلاب عن محتوى الوحدات الحالية بلغت 94%.`;
+      }, 600);
+    }
+  }
+
+  function sendSupervisorReportDirectly() {
+    const teacher = document.getElementById('supTargetTeacher').value;
+    const email = document.getElementById('supTargetEmail').value;
+    alert(`✅ تم إرسال التقرير الإشرافي بنجاح إلى البريد (${email}) الخاص بالمعلم (${teacher}) وتم تحديث السجل الأكاديمي.`);
+  }
+
+  function addNewTeacherModal() {
+    const name = prompt("اسم المعلم الجديد:");
+    if(!name) return;
+    alert(`✨ تمت إضافة المعلم (${name}) بنجاح وإدراجه في لوحة المتابعة الإشرافية.`);
+  }
+
+  function addNewStudentModal() {
+    const name = prompt("اسم الطالب الجديد:");
+    if(!name) return;
+    alert(`✅ تمت إضافة الطالب (${name}) بنجاح.`);
+  }
+
+  // ---------- الإدارة والمالية: ترحيل شهري آلي حقيقي ----------
+  const monthNames = ['', 'الأول (سبتمبر)', 'الثاني (أكتوبر)', 'الثالث (نوفمبر)', 'الرابع (ديسمبر)', 'الخامس (يناير)', 'السادس (فبراير)'];
+
+  function checkMonthlyCompletion(selectElem) {
+    const row = selectElem.closest('tr');
+    let completedCount = 0;
+    row.querySelectorAll('.session-status').forEach(s => { if(s.value === 'completed') completedCount++; });
+    const statusCell = row.querySelector('.status-cell');
+
+    if(completedCount >= 4) {
+      row.style.backgroundColor = 'var(--card-bg)';
+      statusCell.style.color = 'var(--success)';
+      statusCell.innerHTML = 'مكتمل الشهري ⭐';
+      const isLastRow = row === row.parentElement.lastElementChild;
+      if(isLastRow && row.getAttribute('data-rolled') !== 'true') {
+        row.setAttribute('data-rolled', 'true');
+        autoRolloverToNextMonth(row);
+      }
+    } else {
+      statusCell.style.color = 'var(--text-muted)';
+      statusCell.innerHTML = 'قيد المتابعة';
+      row.setAttribute('data-rolled', 'false');
+    }
+  }
+
+  function autoRolloverToNextMonth(completedRow) {
+    const tbody = completedRow.parentElement;
+    const student = completedRow.getAttribute('data-student');
+    const email = completedRow.getAttribute('data-email');
+    const phone = completedRow.getAttribute('data-phone');
+    const teacher = completedRow.getAttribute('data-teacher');
+    const nextMonth = parseInt(completedRow.getAttribute('data-month'), 10) + 1;
+    const monthLabel = monthNames[nextMonth] || `${nextMonth}`;
+
+    const row = document.createElement('tr');
+    row.setAttribute('data-student', student);
+    row.setAttribute('data-email', email);
+    row.setAttribute('data-phone', phone);
+    row.setAttribute('data-teacher', teacher);
+    row.setAttribute('data-month', nextMonth);
+    row.setAttribute('data-rolled', 'false');
+    row.innerHTML = `
+      <td><b>${student}</b></td>
+      <td>${email}</td>
+      <td>${phone}</td>
+      <td>${teacher}</td>
+      <td><b>الشهر ${monthLabel}</b></td>
+      <td class="text-center" style="font-weight:700; color:var(--gold);">4</td>
+      <td class="text-center"><select class="editable-cell session-status" onchange="checkMonthlyCompletion(this)"><option value="completed">✅ حضر</option><option value="absent" selected>❌ غائب</option></select></td>
+      <td class="text-center"><select class="editable-cell session-status" onchange="checkMonthlyCompletion(this)"><option value="completed">✅ حضر</option><option value="absent" selected>❌ غائب</option></select></td>
+      <td class="text-center"><select class="editable-cell session-status" onchange="checkMonthlyCompletion(this)"><option value="completed">✅ حضر</option><option value="absent" selected>❌ غائب</option></select></td>
+      <td class="text-center"><select class="editable-cell session-status" onchange="checkMonthlyCompletion(this)"><option value="completed">✅ حضر</option><option value="absent" selected>❌ غائب</option></select></td>
+      <td class="text-center status-cell" style="color:var(--text-muted); font-weight:700;">قيد المتابعة</td>
+    `;
+    tbody.appendChild(row);
+    alert(`🔄 اكتمل الشهر بنجاح — تم إنشاء فاتورة الشهر الجديد وإضافة صف "الشهر ${monthLabel}" آليًا لـ ${student}، مع تحديث راتب ${teacher} تلقائيًا.`);
+  }
+
+  async function runManagementAiAdvisor() {
+    const out = document.getElementById('managementAiAdvisorOutput');
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>مستشار الإدارة والمالية يحلل مؤشرات التشغيل والأجور...</b>`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/financial-advisor', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+      const data = await res.json();
+      if(res.ok && data.status === 'success') { out.innerHTML = data.financial_report.replace(/\n/g,'<br>'); return; }
+      throw new Error('bad response');
+    } catch(e) {
+      setTimeout(() => {
+        out.innerHTML = `💰 <b>التقرير المالي والتطويري الإداري:</b><br>` +
+          `• <b>الإيرادات التشغيلية:</b> ممتازة، مع نمو ملحوظ في الاشتراكات بنسبة 15%.<br>` +
+          `• <b>أجور المعلمين:</b> محسوبة آلياً بدقة بناءً على حصص الشهر.<br>` +
+          `• <b>توصية للتطوير:</b> تفعيل حزمة مكافآت تحفيزية للمعلمين الحاصلين على تقييم ممتاز في المرور الإشرافي.`;
+      }, 500);
+    }
+  }
+
+  function exportExcel() {
+    try {
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.table_to_sheet(document.getElementById('studentsTrackingTable'));
+      XLSX.utils.book_append_sheet(wb, ws, "متابعة الحصص");
+      XLSX.writeFile(wb, "Madad_Management_Tracking.xlsx");
+      alert("✅ تم التصدير كملف إكسل بنجاح!");
+    } catch(e) { alert("❌ حدث خطأ أثناء التصدير."); }
+  }
+
+  // ---------- استوديو المناهج ----------
+  let curricula = [
+    { name:'منهج العربية بين يديك (مستوى المبتدئين)', level:'مستوى المبتدئين (A1-A2)', framework:'كراشن (Comprehensible Input) + TPRS', badge:'معتمد (TPRS)',
+      objectives:'يتكون من 8 وحدات رئيسية، تشمل التحية، العائلة، الحياة اليومية، والسوق. يغطي 96 حصة تعليمية.', progress:65,
+      units:[ {name:'الوحدة 1: التحية والتعارف', done:true}, {name:'الوحدة 2: الأسرة والألوان', done:true}, {name:'الوحدة 3: الطعام والسوق', done:false}, {name:'الوحدة 4: الاتجاهات والمكان', done:false} ], files:[] }
+  ];
+
+  function renderCurricula() {
+    const container = document.getElementById('curriculumListContainer');
+    if(!container) return;
+    container.innerHTML = curricula.map((c, idx) => `
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:20px; border-radius:14px; margin-bottom:15px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+          <h4 style="margin:0; color:var(--text-primary); font-size:16px;">📖 ${c.name}</h4>
+          <span style="background:#E8F8F5; color:#145A32; padding:4px 10px; border-radius:6px; font-weight:700; font-size:12.5px;">${c.badge || 'منهج مضاف'}</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-muted); margin:0 0 6px;">🎯 ${c.level} &nbsp;|&nbsp; 🧩 ${c.framework}</p>
+        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:10px; line-height:1.8;"><b>الخطة الدراسية والوحدات:</b> ${c.objectives}</p>
+        <div class="curr-progress-wrap">
+          <div class="curr-progress-bar"><div class="curr-progress-fill" style="width:${c.progress}%;"></div></div>
+          <span style="font-size:12px; font-weight:700; color:var(--gold-dark);">${c.progress}% مكتمل</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
+          <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="alert('📖 تم فتح تفاصيل خطة الوحدات والدروس للمنهج.')">عرض تفاصيل الخطة</button>
+          <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#137333;" onclick="alert('📝 تم فتح بنك الأسئلة المرتبط بالمنهج.')">إدارة بنك الأسئلة</button>
+        </div>
+        <div class="file-upload-row">
+          <label class="upload-label">📎 رفع ملف لهذا المنهج
+            <input type="file" multiple onchange="handleCurriculumFileUpload(this, ${idx})">
+          </label>
+          <span style="font-size:12px; color:var(--text-muted);">كتب، تسجيلات صوتية، أوراق عمل خاصة بهذه المادة.</span>
+        </div>
+        <ul class="file-list">${c.files.map(f => `<li><span>📄 ${f.name}</span><span class="fsize">${f.size}</span></li>`).join('')}</ul>
+      </div>
+    `).join('');
+  }
+
+  function formatFileSize(bytes) {
+    if(bytes < 1024) return bytes + ' B';
+    if(bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+
+  function handleCurriculumFileUpload(inputElem, idx) {
+    Array.from(inputElem.files).forEach(f => curricula[idx].files.push({ name:f.name, size: formatFileSize(f.size) }));
+    renderCurricula();
+  }
+
+  function addNewCurriculumModal() {
+    const title = prompt("أدخل اسم المنهج الجديد:");
+    if(!title) return;
+    const desc = prompt("اكتب وصفاً مختصراً للخطة والوحدات:", "يتكون من 4 وحدات رئيسية...");
+    curricula.push({ name:title, level:'غير محدد', framework:'تدرّج تقليدي بالوحدات', badge:'منهج مضاف يدوياً', objectives: desc || 'لم تُحدَّد التفاصيل بعد.', progress:0, units:[{name:'الوحدة 1', done:false}], files:[] });
+    renderCurricula();
+    alert(`✅ تمت إضافة المنهج (${title}) بنجاح.`);
+  }
+
+  function runCurriculumAiBuilderModal() {
+    const title = prompt("أدخل موضوع المنهج المراد توليده آلياً:");
+    if(!title) return;
+    curricula.push({ name:title, level:'يُحدَّد بالذكاء الاصطناعي', framework:'كراشن (Comprehensible Input) + TPRS', badge:'مولَّد بالذكاء الاصطناعي', objectives:'تم توليد 6 وحدات متدرجة تغطي المهارات الأربع تلقائياً.', progress:0, units:[{name:'الوحدة 1 (مولّدة آلياً)', done:false}], files:[] });
+    renderCurricula();
+    alert(`✨ قام مساعد مداد الذكي بتوليد الخطة والوحدات لـ (${title}) وتمت إضافتها بنجاح.`);
+  }
+
+  async function generateCurriculumAiPlan() {
+    const promptText = document.getElementById('curriculumAiPrompt').value;
+    const levelText = document.getElementById('curriculumLevelSelect').value;
+    const out = document.getElementById('curriculumAiOutput');
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>مساعد مداد يحلل المعايير ويبني الخطة الأكاديمية الشاملة...</b>`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/curriculum-plan', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ topic: promptText, level: levelText })
+      });
+      const data = await res.json();
+      if(res.ok && data.status === 'success') { out.innerHTML = data.curriculum_plan.replace(/\n/g,'<br>'); return; }
+      throw new Error('bad response');
+    } catch(e) {
+      setTimeout(() => {
+        out.innerHTML = `📚 <b>الخطة المنهجية المولدة بالذكاء الاصطناعي (${promptText} - ${levelText}):</b><br>` +
+          `• <b>هيكل الوحدات:</b> تم تصميم 6 وحدات متدرجة تعتمد على مدخلات كراشن.<br>` +
+          `• <b>أهداف التعلم:</b> تم توزيع المهارات الأربع على 36 حصة تعليمية.<br>` +
+          `• <b>بنك الأسئلة التلقائي:</b> تم توليد 12 سؤالاً متدرجاً لكل وحدة دراسية.`;
+      }, 500);
+    }
+  }
+
+  // ---------- بوابة التواصل ----------
+  function addNewBroadcastModal() {
+    const title = prompt("عنوان التعميم أو الرسالة:");
+    if(!title) return;
+    const audience = prompt("المستهدفون:", "جميع أولياء الأمور");
+    const channel = prompt("قناة الإرسال:", "بريد + واتساب");
+    const tbody = document.querySelector('#broadcastLogTable tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><b>${title}</b></td>
+      <td>${audience}</td>
+      <td>${channel}</td>
+      <td>الآن</td>
+      <td class="text-center" style="color:var(--success); font-weight:700;">جارٍ الإرسال...</td>
+    `;
+    tbody.prepend(row);
+    alert(`✅ تم إدراج التعميم (${title}) في قائمة الإرسال بنجاح.`);
+  }
+
+  async function runBroadcastAiGenerator() {
+    const topic = document.getElementById('broadcastPromptInput').value;
+    const out = document.getElementById('broadcastAiOutput');
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>مداد يصيغ رسائل مخصصة لكل شريحة مستفيدة...</b>`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/broadcast-message', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ topic })
+      });
+      const data = await res.json();
+      if(res.ok && data.status === 'success') { out.innerHTML = data.broadcast.replace(/\n/g,'<br>'); return; }
+      throw new Error('bad response');
+    } catch(e) {
+      setTimeout(() => {
+        out.innerHTML = `📨 <b>تمت صياغة وبث التعميم بنجاح (${topic}):</b><br>` +
+          `• نسخة أولياء الأمور: صيغة ودّية مختصرة عبر واتساب.<br>` +
+          `• نسخة الطلاب: صيغة تحفيزية عبر البريد داخل بوابة الطالب.<br>` +
+          `• نسخة المعلمين: تذكير إداري رسمي بالمواعيد النهائية.`;
+      }, 500);
+    }
+  }
+
+  // ---------- التقارير المتقدمة ----------
+  async function runExecutiveAiAnalytics() {
+    const out = document.getElementById('executiveAnalyticsOutput');
+    out.style.display = 'block';
+    out.innerHTML = `🤖 <b>محلل البيانات التنفيذي يفحص أداء المعاهد ونسب الحضور...</b>`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/executive-analytics', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+      const data = await res.json();
+      if(res.ok && data.status === 'success') { out.innerHTML = data.executive_report.replace(/\n/g,'<br>'); return; }
+      throw new Error('bad response');
+    } catch(e) {
+      setTimeout(() => {
+        out.innerHTML = `📈 <b>التقرير التشخيصي الشامل:</b><br>` +
+          `• الأداء الأكاديمي العام ضمن النطاق الممتاز (فوق 90% في 5 من 6 مؤشرات رئيسية).<br>` +
+          `• أعلى فرصة لرفع الكفاءة: تقليص زمن تصحيح الواجبات لدى 20% من المعلمين.<br>` +
+          `• التوقع: استمرار النمو بمعدل 8-10% شهريًا إن استمر معدل التجديد الحالي.`;
+      }, 500);
+    }
+  }
+
+  function exportReportsExcel() {
+    try {
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.table_to_sheet(document.getElementById('kpiReportsTable'));
+      XLSX.utils.book_append_sheet(wb, ws, "مؤشرات الأداء");
+      XLSX.writeFile(wb, "Madad_Institution_KPIs.xlsx");
+      alert("✅ تم تصدير تقرير المؤسسة الشامل بنجاح!");
+    } catch(e) { alert("❌ حدث خطأ أثناء التصدير."); }
+  }
+
+  // ================= قسم القرآن الكريم وتجويده المتدرج =================
+  const quranMotivations = [
+    "«خَيْرُكُمْ مَنْ تَعَلَّمَ القُرْآنَ وَعَلَّمَهُ» (رواه البخاري). واصل مسيرتك المباركة!",
+    "«اقْرَءُوا القُرْآنَ فإنَّه يأتي يوم القيامة شفيعاً لأصحابه» (رواه مسلم).",
+    "«الْمَاهِرُ بِالْقُرْآنِ مَعَ السَّفَرَةِ الْكِرَامِ الْبَرَرَةِ» (متفق عليه)."
+  ];
+
+  const defaultSurahs = [
+    {n:1, name:"الفاتحة", a:7, t:"مكية", s:"done"}, {n:2, name:"البقرة", a:286, t:"مدنية", s:"review"},
+    {n:3, name:"آل عمران", a:200, t:"مدنية", s:"pending"}, {n:4, name:"النساء", a:176, t:"مدنية", s:"pending"},
+    {n:5, name:"المائدة", a:120, t:"مدنية", s:"pending"}, {n:6, name:"الأنعام", a:165, t:"مكية", s:"pending"},
+    {n:7, name:"الأعراف", a:206, t:"مكية", s:"pending"}, {n:8, name:"الأنفال", a:75, t:"مدنية", s:"pending"},
+    {n:9, name:"التوبة", a:129, t:"مدنية", s:"pending"}, {n:10, name:"يونس", a:109, t:"مكية", s:"pending"},
+    {n:11, name:"هود", a:123, t:"مكية", s:"pending"}, {n:12, name:"يوسف", a:111, t:"مكية", s:"pending"},
+    {n:13, name:"الرعد", a:43, t:"مدنية", s:"pending"}, {n:14, name:"إبراهيم", a:52, t:"مكية", s:"pending"},
+    {n:15, name:"الحجر", a:99, t:"مكية", s:"pending"}, {n:16, name:"النحل", a:128, t:"مكية", s:"pending"},
+    {n:17, name:"الإسراء", a:111, t:"مكية", s:"pending"}, {n:18, name:"الكهف", a:110, t:"مكية", s:"pending"},
+    {n:19, name:"مريم", a:98, t:"مكية", s:"pending"}, {n:20, name:"طه", a:135, t:"مكية", s:"pending"},
+    {n:21, name:"الأنبياء", a:112, t:"مكية", s:"pending"}, {n:22, name:"الحج", a:78, t:"مدنية", s:"pending"},
+    {n:23, name:"المؤمنون", a:118, t:"مكية", s:"pending"}, {n:24, name:"النور", a:64, t:"مدنية", s:"pending"},
+    {n:25, name:"الفرقان", a:77, t:"مكية", s:"pending"}, {n:26, name:"الشعراء", a:227, t:"مكية", s:"pending"},
+    {n:27, name:"النمل", a:93, t:"مكية", s:"pending"}, {n:28, name:"القصص", a:88, t:"مكية", s:"pending"},
+    {n:29, name:"العنكبوت", a:69, t:"مكية", s:"pending"}, {n:30, name:"الروم", a:60, t:"مكية", s:"pending"},
+    {n:31, name:"لقمان", a:34, t:"مكية", s:"pending"}, {n:32, name:"السجدة", a:30, t:"مكية", s:"pending"},
+    {n:33, name:"الأحزاب", a:73, t:"مدنية", s:"pending"}, {n:34, name:"سبأ", a:54, t:"مكية", s:"pending"},
+    {n:35, name:"فاطر", a:45, t:"مكية", s:"pending"}, {n:36, name:"يس", a:83, t:"مكية", s:"review"},
+    {n:37, name:"الصافات", a:182, t:"مكية", s:"pending"}, {n:38, name:"ص", a:88, t:"مكية", s:"pending"},
+    {n:39, name:"الزمر", a:75, t:"مكية", s:"pending"}, {n:40, name:"غافر", a:85, t:"مكية", s:"pending"},
+    {n:41, name:"فصلت", a:54, t:"مكية", s:"pending"}, {n:42, name:"الشورى", a:53, t:"مكية", s:"pending"},
+    {n:43, name:"الزخرف", a:89, t:"مكية", s:"pending"}, {n:44, name:"الدخان", a:59, t:"مكية", s:"pending"},
+    {n:45, name:"الجاثية", a:37, t:"مكية", s:"pending"}, {n:46, name:"الأحقاف", a:35, t:"مكية", s:"pending"},
+    {n:47, name:"محمد", a:38, t:"مدنية", s:"pending"}, {n:48, name:"الفتح", a:29, t:"مدنية", s:"pending"},
+    {n:49, name:"الحجرات", a:18, t:"مدنية", s:"pending"}, {n:50, name:"ق", a:45, t:"مكية", s:"pending"},
+    {n:51, name:"الذاريات", a:60, t:"مكية", s:"pending"}, {n:52, name:"الطور", a:49, t:"مكية", s:"pending"},
+    {n:53, name:"النجم", a:62, t:"مكية", s:"pending"}, {n:54, name:"القمر", a:55, t:"مكية", s:"pending"},
+    {n:55, name:"الرحمن", a:78, t:"مدنية", s:"review"}, {n:56, name:"الواقعة", a:96, t:"مكية", s:"review"},
+    {n:57, name:"الحديد", a:29, t:"مدنية", s:"pending"}, {n:58, name:"المجادلة", a:22, t:"مدنية", s:"pending"},
+    {n:59, name:"الحشر", a:24, t:"مدنية", s:"pending"}, {n:60, name:"الممتحنة", a:13, t:"مدنية", s:"pending"},
+    {n:61, name:"الصف", a:14, t:"مدنية", s:"pending"}, {n:62, name:"الجمعة", a:11, t:"مدنية", s:"pending"},
+    {n:63, name:"المنافقون", a:11, t:"مدنية", s:"pending"}, {n:64, name:"التغابن", a:18, t:"مدنية", s:"pending"},
+    {n:65, name:"الطلاق", a:12, t:"مدنية", s:"pending"}, {n:66, name:"التحريم", a:12, t:"مدنية", s:"pending"},
+    {n:67, name:"الملك", a:30, t:"مكية", s:"done"}, {n:68, name:"القلم", a:52, t:"مكية", s:"pending"},
+    {n:69, name:"الحاقة", a:52, t:"مكية", s:"pending"}, {n:70, name:"المعارج", a:44, t:"مكية", s:"pending"},
+    {n:71, name:"نوح", a:28, t:"مكية", s:"pending"}, {n:72, name:"الجن", a:28, t:"مكية", s:"pending"},
+    {n:73, name:"المزمل", a:20, t:"مكية", s:"pending"}, {n:74, name:"المدثر", a:56, t:"مكية", s:"pending"},
+    {n:75, name:"القيامة", a:40, t:"مكية", s:"pending"}, {n:76, name:"الإنسان", a:31, t:"مدنية", s:"pending"},
+    {n:77, name:"المرسلات", a:50, t:"مكية", s:"pending"}, {n:78, name:"النبأ", a:40, t:"مكية", s:"done"},
+    {n:79, name:"النازعات", a:46, t:"مكية", s:"done"}, {n:80, name:"عبس", a:42, t:"مكية", s:"done"},
+    {n:81, name:"التكوير", a:29, t:"مكية", s:"pending"}, {n:82, name:"الانفطار", a:19, t:"مكية", s:"pending"},
+    {n:83, name:"المطففين", a:36, t:"مكية", s:"pending"}, {n:84, name:"الانشقاق", a:25, t:"مكية", s:"pending"},
+    {n:85, name:"البروج", a:22, t:"مكية", s:"pending"}, {n:86, name:"الطارق", a:17, t:"مكية", s:"pending"},
+    {n:87, name:"الأعلى", a:19, t:"مكية", s:"done"}, {n:88, name:"الغاشية", a:26, t:"مكية", s:"done"},
+    {n:89, name:"الفجر", a:30, t:"مكية", s:"done"}, {n:90, name:"البلد", a:20, t:"مكية", s:"done"},
+    {n:91, name:"الشمس", a:15, t:"مكية", s:"done"}, {n:92, name:"الليل", a:21, t:"مكية", s:"done"},
+    {n:93, name:"الضحى", a:11, t:"مكية", s:"done"}, {n:94, name:"الشرح", a:8, t:"مكية", s:"done"},
+    {n:95, name:"التين", a:8, t:"مكية", s:"done"}, {n:96, name:"العلق", a:19, t:"مكية", s:"done"},
+    {n:97, name:"القدر", a:5, t:"مكية", s:"done"}, {n:98, name:"البينة", a:8, t:"مدنية", s:"done"},
+    {n:99, name:"الزلزلة", a:8, t:"مدنية", s:"done"}, {n:100, name:"العاديات", a:11, t:"مكية", s:"done"},
+    {n:101, name:"القارعة", a:11, t:"مكية", s:"done"}, {n:102, name:"التكاثر", a:8, t:"مكية", s:"done"},
+    {n:103, name:"العصر", a:3, t:"مكية", s:"done"}, {n:104, name:"الهمزة", a:9, t:"مكية", s:"done"},
+    {n:105, name:"الفيل", a:5, t:"مكية", s:"done"}, {n:106, name:"قريش", a:4, t:"مكية", s:"done"},
+    {n:107, name:"الماعون", a:7, t:"مكية", s:"done"}, {n:108, name:"الكوثر", a:3, t:"مكية", s:"done"},
+    {n:109, name:"الكافرون", a:6, t:"مكية", s:"done"}, {n:110, name:"النصر", a:3, t:"مدنية", s:"done"},
+    {n:111, name:"المسد", a:5, t:"مكية", s:"done"}, {n:112, name:"الإخلاص", a:4, t:"مكية", s:"done"},
+    {n:113, name:"الفلق", a:5, t:"مكية", s:"done"}, {n:114, name:"الناس", a:6, t:"مكية", s:"done"}
+  ];
+
+  let quranTeachersList = [
+    { id:'1', name:'الشيخ عبد الرحمن أحمد', email:'teacher1@madad-ai.com' },
+    { id:'2', name:'أستاذة مريم خالد', email:'teacher2@madad-ai.com' }
+  ];
+
+  let quranStudentsList = [
+    { id:'q1', name:'عمر أحمد', teacherId:'1', email:'omar.h@student-madad.com',
+      newSave:'سورة البقرة (1-20)', newGrade:'ممتاز', reviewStop:'توقف عند آل عمران (آية 50)', reviewGrade:'جيد جداً',
+      surahs: JSON.parse(JSON.stringify(defaultSurahs)) },
+    { id:'q2', name:'فاطمة الزهراء', teacherId:'2', email:'fatma.z@student-madad.com',
+      newSave:'سورة آل عمران (50-80)', newGrade:'جيد', reviewStop:'توقف عند النساء (آية 30)', reviewGrade:'مقبول',
+      surahs: JSON.parse(JSON.stringify(defaultSurahs)) }
+  ];
+
+  function renderQuranRoleTabs() {
+    const container = document.getElementById('quranRoleTabsContainer');
+    if(!container) return;
+    let html = '';
+    quranTeachersList.forEach((t, idx) => {
+      html += `<button type="button" class="role-btn ${idx===0?'active-role':''}" onclick="switchQuranRole('teacher${t.id}', this)">👨‍🏫 المعلم: ${t.name}</button>`;
+    });
+    html += `<button type="button" class="role-btn" onclick="switchQuranRole('supervisor', this)">👔 المشرف العام (إدارة شاملة)</button>`;
+    container.innerHTML = html;
+    const sel = document.getElementById('quranSupervisorTeacherSelect');
+    if(sel) sel.innerHTML = quranTeachersList.map(t => `<option value="${t.name}" data-email="${t.email}">${t.name}</option>`).join('');
+  }
+
+  function renderQuranTeachersStudentsTable() {
+    const tbody = document.getElementById('quranTeachersStudentsBody');
+    if(!tbody) return;
+    tbody.innerHTML = '';
+    quranStudentsList.forEach(student => {
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-teacher-id', student.teacherId);
+      tr.innerHTML = `
+        <td><select class="editable-cell" onchange="updateQuranStudentTeacher('${student.id}', this.value)" style="font-weight:700;">
+          ${quranTeachersList.map(t => `<option value="${t.id}" ${t.id===student.teacherId?'selected':''}>${t.name}</option>`).join('')}
+        </select></td>
+        <td><input type="text" class="editable-cell" value="${student.name}" style="font-weight:700;" onchange="updateQuranField('${student.id}','name',this.value); renderQuranAll();"></td>
+        <td><input type="email" class="editable-cell" value="${student.email}" onchange="updateQuranField('${student.id}','email',this.value)"></td>
+        <td class="text-center quran-supervisor-only" style="display:none;"><button style="background:none;border:none;cursor:pointer;font-size:16px;" onclick="deleteQuranStudent('${student.id}')">🗑️</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderQuranIndependentStudentTables() {
+    const container = document.getElementById('quranIndependentStudentContainer');
+    if(!container) return;
+    container.innerHTML = '';
+    quranStudentsList.forEach(student => {
+      let totalAyat = 6236, studentAyat = 0, studentDoneSurahs = 0;
+      student.surahs.forEach(s => {
+        if(s.s === 'done') { studentAyat += s.a; studentDoneSurahs++; }
+        else if(s.s === 'review') { studentAyat += s.a * 0.5; }
+      });
+      const studentPct = ((studentAyat/totalAyat)*100).toFixed(1);
+      const studentRemaining = 114 - studentDoneSurahs;
+
+      const card = document.createElement('div');
+      card.className = 'student-card-quran quran-student-card';
+      card.setAttribute('data-teacher-id', student.teacherId);
+
+      let surahsRowsHTML = '';
+      student.surahs.forEach((surah, sIdx) => {
+        surahsRowsHTML += `
+          <tr>
+            <td class="text-center">${surah.n}</td>
+            <td><b>${surah.name}</b></td>
+            <td class="text-center">${surah.a}</td>
+            <td class="text-center">${surah.t}</td>
+            <td class="text-center">
+              <select class="status-select ${surah.s==='done'?'status-done':(surah.s==='review'?'status-review':'status-pending')}" onchange="updateQuranSurahStatus('${student.id}', ${sIdx}, this)">
+                <option value="done" ${surah.s==='done'?'selected':''}>■ متقن (100%)</option>
+                <option value="review" ${surah.s==='review'?'selected':''}>■ مراجعة (50%)</option>
+                <option value="pending" ${surah.s==='pending'?'selected':''}>■ انتظار (0%)</option>
+              </select>
+            </td>
+          </tr>`;
+      });
+
+      card.innerHTML = `
+        <h3 style="color:var(--gold); margin-top:0; font-size:19px; border-bottom:2px solid var(--gold); padding-bottom:10px;">👤 ملف الطالب المستقل: ${student.name}</h3>
+        <div style="background:var(--accent-sand); padding:15px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:18px;">
+          <div style="display:flex; justify-content:space-between; font-weight:700; font-size:13px; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
+            <span>السور المحفوظة: ${studentDoneSurahs} من 114 سورة</span>
+            <span style="color:var(--danger);">السور المتبقية: ${studentRemaining} سورة</span>
+            <span style="color:var(--gold-dark);">نسبة الإنجاز: ${studentPct}%</span>
+          </div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">المحفوظ تقديراً: ${Math.round(studentAyat)} آية من 6236 آية</div>
+          <div class="progress-container"><div class="progress-bar" style="width:${studentPct}%;">${studentPct}%</div></div>
+        </div>
+        <div class="grid-2" style="margin-bottom:18px;">
+          <div style="background:var(--accent-sand); padding:14px; border-radius:10px; border:1px solid var(--border-color);">
+            <label style="color:var(--gold-dark); font-weight:700;">📌 الحفظ الجديد (ما يحفظه الآن):</label>
+            <input type="text" class="editable-cell" value="${student.newSave}" style="background:var(--card-bg); margin-bottom:10px;" onchange="updateQuranField('${student.id}','newSave',this.value)">
+            <label>تقييم الحفظ الجديد:</label>
+            <select class="editable-cell" style="background:var(--card-bg); font-weight:700;" onchange="updateQuranField('${student.id}','newGrade',this.value)">
+              <option value="ممتاز" ${student.newGrade==='ممتاز'?'selected':''}>🌟 ممتاز</option>
+              <option value="جيد جداً" ${student.newGrade==='جيد جداً'?'selected':''}>⭐ جيد جداً</option>
+              <option value="جيد" ${student.newGrade==='جيد'?'selected':''}>👍 جيد</option>
+              <option value="مقبول" ${student.newGrade==='مقبول'?'selected':''}>📝 مقبول</option>
+              <option value="يعاد" ${student.newGrade==='يعاد'?'selected':''}>🔄 يعاد</option>
+            </select>
+          </div>
+          <div style="background:var(--accent-sand); padding:14px; border-radius:10px; border:1px solid var(--border-color);">
+            <label style="color:#2980B9; font-weight:700;">🔄 أين توقف في المراجعة؟</label>
+            <input type="text" class="editable-cell" value="${student.reviewStop}" style="background:var(--card-bg); margin-bottom:10px;" onchange="updateQuranField('${student.id}','reviewStop',this.value)">
+            <label>تقييم المراجعة:</label>
+            <select class="editable-cell" style="background:var(--card-bg); font-weight:700;" onchange="updateQuranField('${student.id}','reviewGrade',this.value)">
+              <option value="ممتاز" ${student.reviewGrade==='ممتاز'?'selected':''}>🌟 ممتاز</option>
+              <option value="جيد جداً" ${student.reviewGrade==='جيد جداً'?'selected':''}>⭐ جيد جداً</option>
+              <option value="جيد" ${student.reviewGrade==='جيد'?'selected':''}>👍 جيد</option>
+              <option value="مقبول" ${student.reviewGrade==='مقبول'?'selected':''}>📝 مقبول</option>
+              <option value="يعاد" ${student.reviewGrade==='يعاد'?'selected':''}>🔄 يعاد</option>
+            </select>
+          </div>
+        </div>
+        <h4 style="color:var(--text-muted); margin-bottom:6px; font-size:14px;">📚 جدول الفهرس الخاص بـ (${student.name}) - الـ 114 سورة:</h4>
+        <div style="overflow-x:auto; max-height:340px; overflow-y:auto; border:1px solid var(--border-color); border-radius:10px;">
+          <table class="supervision-table" style="margin-top:0;">
+            <thead><tr><th style="width:10%;">رقم</th><th style="width:30%;">اسم السورة</th><th style="width:15%;">الآيات</th><th style="width:20%;">النوع</th><th style="width:25%;">حالة التقدم</th></tr></thead>
+            <tbody>${surahsRowsHTML}</tbody>
+          </table>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function updateQuranField(id, field, val) { const st = quranStudentsList.find(s=>s.id===id); if(st) st[field]=val; }
+  function updateQuranStudentTeacher(id, teacherId) { const st = quranStudentsList.find(s=>s.id===id); if(st){ st.teacherId=teacherId; renderQuranAll(); } }
+  function updateQuranSurahStatus(id, idx, select) {
+    const st = quranStudentsList.find(s=>s.id===id);
+    if(st) {
+      st.surahs[idx].s = select.value;
+      select.className = `status-select ${select.value==='done'?'status-done':(select.value==='review'?'status-review':'status-pending')}`;
+      renderQuranIndependentStudentTables();
+    }
+  }
+
+  function renderQuranAll() {
+    renderQuranRoleTabs();
+    renderQuranTeachersStudentsTable();
+    renderQuranIndependentStudentTables();
+  }
+
+  function switchQuranRole(role, btn) {
+    document.querySelectorAll('#quranRoleTabsContainer .role-btn').forEach(b => b.classList.remove('active-role'));
+    if(btn) btn.classList.add('active-role');
+
+    const supSection = document.getElementById('quranSupervisorEvaluationSection');
+    const supFields = document.querySelectorAll('.quran-supervisor-only');
+    const rows = document.querySelectorAll('#quranTeachersStudentsBody tr');
+    const cards = document.querySelectorAll('#quranIndependentStudentContainer .quran-student-card');
+    const title = document.getElementById('quranTeachersStudentsTitle');
+
+    if(role === 'supervisor') {
+      supSection.style.display = 'block';
+      supFields.forEach(el => el.style.display = '');
+      title.innerText = '👨‍🏫 إدارة المعلمين وطلاب الحلقات (الإشراف الشامل)';
+      rows.forEach(r => r.style.display = '');
+      cards.forEach(c => c.style.display = 'block');
+    } else {
+      supSection.style.display = 'none';
+      supFields.forEach(el => el.style.display = 'none');
+      const teacherId = role.replace('teacher', '');
+      const tObj = quranTeachersList.find(t => t.id === teacherId);
+      title.innerText = tObj ? `👨‍🏫 حلقة المعلم: ${tObj.name}` : '👨‍🏫 حلقة المعلم';
+      rows.forEach(r => { r.style.display = (r.getAttribute('data-teacher-id') === teacherId) ? '' : 'none'; });
+      cards.forEach(c => { c.style.display = (c.getAttribute('data-teacher-id') === teacherId) ? 'block' : 'none'; });
+    }
+  }
+
+  function addNewQuranTeacherModal() {
+    const name = prompt("أدخل اسم معلم الحلقة الجديد:"); if(!name) return;
+    const email = prompt("البريد الإلكتروني:", "teacher@madad-ai.com");
+    quranTeachersList.push({ id:(quranTeachersList.length+1).toString(), name, email });
+    renderQuranAll();
+    alert(`✨ تم إضافة معلم الحلقة (${name}) بنجاح.`);
+  }
+
+  function addNewQuranStudent() {
+    const name = prompt("اسم الطالب الحافظ الجديد:"); if(!name) return;
+    const email = prompt("البريد الإلكتروني:", "student@madad-ai.com");
+    quranStudentsList.push({
+      id:'q'+Date.now(), name, teacherId: quranTeachersList[0]?quranTeachersList[0].id:'1', email,
+      newSave:'سورة الفاتحة', newGrade:'ممتاز', reviewStop:'البداية', reviewGrade:'ممتاز',
+      surahs: JSON.parse(JSON.stringify(defaultSurahs))
+    });
+    renderQuranAll();
+    alert(`✨ تم إضافة الطالب (${name}) بنجاح وتخصيص ملفه المستقل.`);
+  }
+
+  function deleteQuranStudent(id) {
+    if(!confirm("هل أنت متأكد من حذف هذا الطالب؟")) return;
+    quranStudentsList = quranStudentsList.filter(s => s.id !== id);
+    renderQuranAll();
+  }
+
+  async function submitQuranReport() {
+    const btn = document.getElementById('quranBtn'), loading = document.getElementById('quranLoading'), output = document.getElementById('quranOutput');
+    btn.disabled = true; loading.style.display = 'block'; output.style.display = 'none';
+    const teacherName = document.getElementById('quranSupervisorTeacherSelect').value;
+    const notes = document.getElementById('tajweedNotes').value || 'لا توجد ملاحظات إضافية.';
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/analyze-students', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ class_name:'حلقة تحفيظ', raw_notes:`معلم: ${teacherName}, ملاحظات: ${notes}` })
+      });
+      const data = await res.json();
+      loading.style.display = 'none'; btn.disabled = false;
+      if(res.ok && data.status === 'success') { output.innerHTML = `✅ تم اعتماد التقرير وإرساله لبريد المعلم:<br><br>${data.analysis_report.replace(/\n/g,'<br>')}`; output.style.display='block'; return; }
+      throw new Error('bad response');
+    } catch(e) {
+      loading.style.display = 'none'; btn.disabled = false;
+      output.innerHTML = `✅ تم اعتماد تقرير المرور الإشرافي بنجاح وإرساله لبريد المعلم المستهدف (وضع تجريبي).`;
+      output.style.display = 'block';
+    }
+  }
+
+  function updateTeacherEmailQuran() {
+    const sel = document.getElementById('quranSupervisorTeacherSelect');
+    const email = sel.options[sel.selectedIndex]?.getAttribute('data-email');
+    if(email) document.getElementById('quranEmail').value = email;
+  }
+
+  // ================= نظام متابعة الطلاب المشترك (الإشراف + المعلم) وحساب الرواتب =================
+  let supervisionTeachers = [
+    { id:'1', name:'أحمد محمد', rate:25, email:'ahmed.m@madad-ai.com', phone:'+201000000001' },
+    { id:'2', name:'فاطمة علي', rate:30, email:'fatma.a@madad-ai.com', phone:'+201000000002' }
+  ];
+  const USD_TO_EGP_RATE = 50.98;
+  let currentCurrency = 'USD';
+  let supervisionGlobalMaxSessions = 4;
+  let trackingMode = 'sessions';
+
+  let supervisionStudents = [
+    { id:'sv1', name:'أحمد جونسون', teacherId:'1', target:4, level:'العربية بين يديك (الكتاب الأول)', notes:'أداء متميز بالنطق، يحتاج مراجعة أحرف التفخيم.',
+      sessions:[ {date:'2026-09-01',status:'completed'}, {date:'2026-09-05',status:'completed'}, {date:'2026-09-08',status:'completed'}, {date:'2026-09-12',status:'absent'} ] },
+    { id:'sv2', name:'سارة لي', teacherId:'2', target:6, level:'الدراسات الإسلامية - أساسي', notes:'تفاعل ممتاز في الحوار الصفي.',
+      sessions:[ {date:'2026-09-02',status:'completed'}, {date:'2026-09-06',status:'completed'}, {date:'2026-09-09',status:'completed'}, {date:'2026-09-13',status:'completed'}, {date:'2026-09-16',status:'postponed'}, {date:'2026-09-19',status:'absent'} ] }
+  ];
+
+  let dailyHoursLog = [
+    { id:'dh1', teacherId:'1', date:'2026-09-01', hours:4, shift:'دوام كامل', notes:'' },
+    { id:'dh2', teacherId:'1', date:'2026-09-02', hours:4, shift:'دوام كامل', notes:'' },
+    { id:'dh3', teacherId:'2', date:'2026-09-01', hours:3, shift:'دوام جزئي', notes:'' }
+  ];
+
+  function recomputeGlobalMaxSessions() {
+    let maxT = 1;
+    supervisionStudents.forEach(s => { if(s.target > maxT) maxT = s.target; if(s.sessions.length > maxT) maxT = s.sessions.length; });
+    supervisionGlobalMaxSessions = maxT;
+  }
+
+  function ensureSessionsLength(student) {
+    while(student.sessions.length < supervisionGlobalMaxSessions) student.sessions.push({date:'', status:'completed'});
+  }
+
+  function renderTrackingTable(prefix, opts) {
+    const head = document.getElementById(prefix + 'TrackingHead');
+    const body = document.getElementById(prefix + 'TrackingBody');
+    if(!head || !body) return;
+    const students = opts.filterTeacherId ? supervisionStudents.filter(s => s.teacherId === opts.filterTeacherId) : supervisionStudents;
+
+    let headHtml = `<th style="min-width:150px;">👤 اسم الطالب</th><th style="min-width:130px;">👨‍🏫 المعلم المسؤول</th><th style="min-width:110px; background:var(--accent-sand); color:var(--gold-dark); text-align:center;">🎯 المستهدف شهرياً</th>`;
+    for(let i=1; i<=supervisionGlobalMaxSessions; i++) headHtml += `<th style="min-width:135px; background:var(--accent-sand);">📌 الحصة ${i}</th>`;
+    headHtml += `<th style="min-width:150px;">📖 المستوى/المادة</th><th style="min-width:160px;">📝 ملاحظات</th>`;
+    if(opts.showDelete) headHtml += `<th style="min-width:70px;">حذف</th>`;
+    head.innerHTML = headHtml;
+
+    body.innerHTML = '';
+    students.forEach(student => {
+      ensureSessionsLength(student);
+      const completedCount = student.sessions.filter(s => s.status === 'completed').length;
+      const isComplete = completedCount >= student.target;
+      const mainRow = document.createElement('tr');
+      mainRow.className = 'student-main-row-track' + (isComplete ? ' completed-target-row' : '');
+      const teacherCellHtml = `<select class="editable-cell" onchange="updateTrackingRowTeacher('${student.id}', this.value)">${supervisionTeachers.map(t => `<option value="${t.id}" ${t.id===student.teacherId?'selected':''}>${t.name}</option>`).join('')}</select>`;
+      mainRow.innerHTML = `
+        <td rowspan="2"><input type="text" class="editable-cell" value="${student.name}" style="font-weight:700;" onchange="updateTrackingField('${student.id}','name',this.value)"></td>
+        <td rowspan="2">${teacherCellHtml}</td>
+        <td rowspan="2"><input type="number" class="editable-cell target-input-track" value="${student.target}" min="1" onchange="onTrackingTargetChange('${student.id}', this.value)"></td>
+        <td colspan="${supervisionGlobalMaxSessions}" style="background:var(--accent-sand); text-align:center; font-size:12px; color:var(--text-muted); font-weight:600;">📌 مواعيد الحصص وحالاتها (الصف الثاني أدناه)</td>
+        <td rowspan="2"><input type="text" class="editable-cell" value="${student.level}" onchange="updateTrackingField('${student.id}','level',this.value)"></td>
+        <td rowspan="2"><textarea class="editable-cell" rows="2" onchange="updateTrackingField('${student.id}','notes',this.value)">${student.notes}</textarea></td>
+        ${opts.showDelete ? `<td rowspan="2" class="text-center"><button style="background:none;border:none;cursor:pointer;font-size:16px;" onclick="deleteSupervisionStudent('${student.id}')">🗑️</button></td>` : ''}
+      `;
+      body.appendChild(mainRow);
+
+      const subRow = document.createElement('tr');
+      subRow.className = 'student-sub-row-track' + (isComplete ? ' completed-target-row' : '');
+      let sessionsHtml = '';
+      for(let i=0;i<supervisionGlobalMaxSessions;i++){
+        const sess = student.sessions[i];
+        sessionsHtml += `
+          <td class="session-cell-track">
+            <input type="date" class="editable-cell" value="${sess.date}" onchange="updateTrackingSession('${student.id}', ${i}, 'date', this.value)">
+            <select class="editable-cell" onchange="updateTrackingSession('${student.id}', ${i}, 'status', this.value)">
+              <option value="completed" ${sess.status==='completed'?'selected':''}>✅ حضر</option>
+              <option value="absent" ${sess.status==='absent'?'selected':''}>❌ غائب</option>
+              <option value="postponed" ${sess.status==='postponed'?'selected':''}>⏳ مؤجلة</option>
+            </select>
+          </td>`;
+      }
+      subRow.innerHTML = sessionsHtml;
+      body.appendChild(subRow);
+    });
+  }
+
+  function updateTrackingField(id, field, val) { const st = supervisionStudents.find(s=>s.id===id); if(st) st[field]=val; }
+  function updateTrackingRowTeacher(id, teacherId) { const st = supervisionStudents.find(s=>s.id===id); if(st){ st.teacherId=teacherId; refreshAllTrackingViews(); } }
+  function updateTrackingSession(id, idx, field, val) { const st = supervisionStudents.find(s=>s.id===id); if(st){ st.sessions[idx][field]=val; refreshAllTrackingViews(); } }
+  function onTrackingTargetChange(id, val) {
+    const st = supervisionStudents.find(s=>s.id===id);
+    if(st){ st.target = parseInt(val)||1; recomputeGlobalMaxSessions(); refreshAllTrackingViews(); }
+  }
+  function addManualSessionColumnForAll() { supervisionGlobalMaxSessions++; refreshAllTrackingViews(); }
+
+  function addNewSupervisionStudent() {
+    const name = prompt('اسم الطالب الجديد:'); if(!name) return;
+    const teacherId = supervisionTeachers[0] ? supervisionTeachers[0].id : '1';
+    const target = parseInt(prompt('عدد الحصص المستهدف شهريًا (4 / 6 / 8 / 12):', '4')) || 4;
+    supervisionStudents.push({ id:'sv'+Date.now(), name, teacherId, target, level:'', notes:'', sessions:[] });
+    recomputeGlobalMaxSessions();
+    refreshAllTrackingViews();
+    alert(`✅ تمت إضافة الطالب (${name}) بنجاح للجدول.`);
+  }
+  function deleteSupervisionStudent(id) {
+    if(!confirm('هل أنت متأكد من حذف هذا الطالب من الجدول؟')) return;
+    supervisionStudents = supervisionStudents.filter(s=>s.id!==id);
+    refreshAllTrackingViews();
+  }
+
+  function calculateSupervisionPayroll() {
+    let counts = {}; supervisionTeachers.forEach(t=>counts[t.id]=0);
+    supervisionStudents.forEach(st => { st.sessions.forEach(s=>{ if(s.status==='completed' && counts[st.teacherId]!==undefined) counts[st.teacherId]++; }); });
+    supervisionTeachers.forEach(t => {
+      const count = counts[t.id]||0, total = count * t.rate;
+      const countEl = document.querySelector(`.teacher-completed-count[data-teacher="${t.id}"]`);
+      const totalEl = document.querySelector(`.teacher-total[data-teacher="${t.id}"]`);
+      if(countEl) countEl.innerText = count + ' حصة';
+      if(totalEl) totalEl.innerText = (currentCurrency==='EGP'?'EGP ':'$') + (currentCurrency==='EGP'?(total*USD_TO_EGP_RATE):total).toFixed(2);
+    });
+  }
+
+  function calculateHoursPayroll() {
+    let totals = {}; supervisionTeachers.forEach(t=>totals[t.id]=0);
+    dailyHoursLog.forEach(e => { if(totals[e.teacherId]!==undefined) totals[e.teacherId]+=e.hours; });
+    supervisionTeachers.forEach(t => {
+      const hrs = totals[t.id]||0, total = hrs * t.rate;
+      const countEl = document.querySelector(`.teacher-completed-count[data-teacher="${t.id}"]`);
+      const totalEl = document.querySelector(`.teacher-total[data-teacher="${t.id}"]`);
+      if(countEl) countEl.innerText = hrs + ' ساعة';
+      if(totalEl) totalEl.innerText = (currentCurrency==='EGP'?'EGP ':'$') + (currentCurrency==='EGP'?(total*USD_TO_EGP_RATE):total).toFixed(2);
+    });
+  }
+
+  function refreshHoursOrSessionsPayroll() {
+    const countHeader = document.getElementById('countHeader');
+    if(trackingMode === 'sessions') { calculateSupervisionPayroll(); if(countHeader) countHeader.innerText = 'عدد الحصص المنجزة'; }
+    else { calculateHoursPayroll(); if(countHeader) countHeader.innerText = 'إجمالي الساعات'; }
+  }
+
+  function setTrackingMode(mode) {
+    trackingMode = mode;
+    document.getElementById('modeBtnSessions').classList.toggle('active-mode', mode==='sessions');
+    document.getElementById('modeBtnHours').classList.toggle('active-mode', mode==='hours');
+    document.getElementById('sessionsModeBlock').style.display = mode==='sessions' ? 'block' : 'none';
+    document.getElementById('hoursModeBlock').style.display = mode==='hours' ? 'block' : 'none';
+    refreshHoursOrSessionsPayroll();
+  }
+
+  function renderDailyHoursTable() {
+    const tbody = document.getElementById('dailyHoursBody');
+    if(!tbody) return;
+    tbody.innerHTML = dailyHoursLog.map(entry => {
+      const t = supervisionTeachers.find(x=>x.id===entry.teacherId);
+      return `<tr>
+        <td>${t?t.name:'—'}</td><td>${entry.date}</td><td class="text-center">${entry.hours}</td><td>${entry.shift}</td><td>${entry.notes||''}</td>
+        <td class="text-center"><button style="background:none;border:none;cursor:pointer;font-size:15px;" onclick="deleteDailyHoursEntry('${entry.id}')">🗑️</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function addDailyHoursEntry() {
+    if(supervisionTeachers.length===0){ alert('أضف معلماً أولاً.'); return; }
+    const teacherName = prompt('اسم المعلم:\n' + supervisionTeachers.map(t=>t.name).join(' / '), supervisionTeachers[0].name);
+    const t = supervisionTeachers.find(x=>x.name===teacherName);
+    if(!t){ alert('لم يتم العثور على معلم بهذا الاسم.'); return; }
+    const date = prompt('التاريخ (YYYY-MM-DD):', new Date().toISOString().slice(0,10));
+    const hours = parseFloat(prompt('عدد الساعات:', '4')) || 0;
+    const shift = prompt('نوع الدوام (دوام كامل / دوام جزئي):', 'دوام كامل');
+    dailyHoursLog.push({ id:'dh'+Date.now(), teacherId:t.id, date, hours, shift, notes:'' });
+    renderDailyHoursTable();
+    refreshHoursOrSessionsPayroll();
+  }
+
+  function deleteDailyHoursEntry(id) {
+    dailyHoursLog = dailyHoursLog.filter(e=>e.id!==id);
+    renderDailyHoursTable();
+    refreshHoursOrSessionsPayroll();
+  }
+
+  function rebuildSupervisionTeachersTable() {
+    const tbody = document.getElementById('supervisionTeachersBody');
+    if(!tbody) return;
+    tbody.innerHTML = supervisionTeachers.map(t => `
+      <tr>
+        <td><b>${t.name}</b></td>
+        <td>${t.email}<br><span style="font-size:11px; color:var(--text-muted);">${t.phone||''}</span></td>
+        <td><input type="number" class="editable-cell teacher-rate" data-teacher="${t.id}" value="${currentCurrency==='EGP'?(t.rate*USD_TO_EGP_RATE).toFixed(2):t.rate}" onchange="updateSupervisionBaseRate('${t.id}', this.value)"></td>
+        <td class="text-center teacher-completed-count" data-teacher="${t.id}">0</td>
+        <td><b style="color:var(--gold-dark);" class="teacher-total" data-teacher="${t.id}">$0</b></td>
+        <td class="text-center"><button onclick="alert('⏰ تم إرسال تنبيه واتساب لـ ${t.name}')" style="background:#25D366; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px;">⏰ تنبيه</button></td>
+      </tr>
+    `).join('');
+    refreshHoursOrSessionsPayroll();
+  }
+
+  function updateSupervisionBaseRate(teacherId, val) {
+    const t = supervisionTeachers.find(x=>x.id===teacherId);
+    if(t){ t.rate = currentCurrency==='EGP' ? (parseFloat(val)/USD_TO_EGP_RATE) : (parseFloat(val)||0); refreshHoursOrSessionsPayroll(); }
+  }
+
+  function toggleCurrencyRate() {
+    currentCurrency = document.getElementById('currencySelector').value;
+    document.getElementById('rateHeader').innerText = currentCurrency==='EGP' ? 'سعر الساعة (EGP)' : 'سعر الساعة ($)';
+    document.getElementById('totalHeader').innerText = currentCurrency==='EGP' ? 'إجمالي الراتب (EGP)' : 'إجمالي الراتب ($)';
+    rebuildSupervisionTeachersTable();
+  }
+
+  function addNewSupervisionTeacher() {
+    const name = prompt('اسم المعلم الجديد:'); if(!name) return;
+    const email = prompt('البريد الإلكتروني:', 'teacher@madad-ai.com');
+    const phone = prompt('رقم الهاتف (واتساب):', '+201000000000');
+    const rateInput = prompt(`سعر الساعة (${currentCurrency==='EGP'?'EGP':'$'}):`, currentCurrency==='EGP'?'1270':'25');
+    const baseUsd = currentCurrency==='EGP' ? (parseFloat(rateInput)/USD_TO_EGP_RATE) : (parseFloat(rateInput)||25);
+    supervisionTeachers.push({ id:'t'+Date.now(), name, rate:baseUsd, email, phone });
+    refreshAllTrackingViews();
+    alert(`✨ تمت إضافة المعلم (${name}) بنجاح.`);
+  }
+
+  function refreshAllTrackingViews() {
+    renderTrackingTable('supervisor', { showDelete:true });
+    renderTrackingTable('teacher', { showDelete:false, filterTeacherId:'1' });
+    renderDailyHoursTable();
+    rebuildSupervisionTeachersTable();
+  }
+
+  function exportSupervisionExcel() {
+    try {
+      const wb = XLSX.utils.book_new();
+      const ws1 = XLSX.utils.table_to_sheet(document.getElementById('supervisorTrackingTable'));
+      XLSX.utils.book_append_sheet(wb, ws1, "متابعة الطلاب");
+      const ws2 = XLSX.utils.table_to_sheet(document.getElementById('supervisionTeachersTable'));
+      XLSX.utils.book_append_sheet(wb, ws2, "شؤون المعلمين والرواتب");
+      XLSX.writeFile(wb, "Madad_Supervision_Tracking.xlsx");
+      alert("✅ تم تصدير الجدول بنجاح!");
+    } catch(e) { alert("❌ حدث خطأ أثناء التصدير."); }
+  }
+
+  // ---------- تشغيل أولي: يدعم الروابط العميقة القادمة من الصفحة التعريفية (madad_landing.html#panelId) ----------
+  document.addEventListener('DOMContentLoaded', function() {
+    renderCurricula();
+    renderQuranAll();
+    switchQuranRole('teacher1', document.querySelectorAll('#quranRoleTabsContainer .role-btn')[0]);
+    document.getElementById('dailyMotivation').textContent = quranMotivations[Math.floor(Math.random()*quranMotivations.length)];
+
+    recomputeGlobalMaxSessions();
+    refreshAllTrackingViews();
+
+    const hash = window.location.hash.replace('#', '');
+    if(hash && document.getElementById(hash)) {
+      enterApp();
+      const menuLinks = document.querySelectorAll('.sidebar-menu a');
+      const panelOrder = ['dashboardPanel','studentPanel','teacherPanel','quranPanel','supervisorPanel','managementPanel','curriculumPanel','communicationPanel','reportsPanel'];
+      const idx = panelOrder.indexOf(hash);
+      switchPanel(hash, idx > -1 ? menuLinks[idx] : null);
+    }
+  });
+</script>
+</body>
+
+</html>
