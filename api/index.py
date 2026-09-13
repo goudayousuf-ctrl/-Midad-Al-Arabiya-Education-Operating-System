@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 
 app = FastAPI(title="Madad Alarabiyah AI Backend")
 
@@ -13,15 +14,17 @@ app.add_middleware(
 )
 
 @app.get("/")
+@app.get("/api")
 def read_root():
     return {"status": "online", "message": "خادم مداد السحابي يعمل بنجاح"}
 
 class AskRequest(BaseModel):
-    query: str
+    query: Optional[str] = ""
 
 @app.post("/ask-madad")
+@app.post("/api/ask-madad")
 def ask_madad(req: AskRequest):
-    q = req.query.strip().lower()
+    q = (req.query or "").strip().lower()
     if "انخفض" in q or "الصف الثالث" in q:
         answer = "📉 السبب المرجّح: غياب متكرر لثلاثة طلاب أثّر على المعدل العام، إضافة لتأخر تصحيح آخر واجبين.\n💡 الحل المقترح: جلسة تعويضية سريعة + تفعيل تنبيه غياب فوري لولي الأمر."
     elif "أفضل" in q or "معلم" in q:
@@ -31,12 +34,13 @@ def ask_madad(req: AskRequest):
     return {"status": "success", "answer": answer}
 
 class LessonRequest(BaseModel):
-    topic: str
+    topic: Optional[str] = ""
 
 @app.post("/generate-lesson")
+@app.post("/api/generate-lesson")
 def generate_lesson(req: LessonRequest):
     plan = (
-        f"📚 الخطة التعليمية المولدة عبر سحابة Vercel ({req.topic}):\n"
+        f"📚 الخطة التعليمية المولدة عبر سحابة Vercel ({req.topic or 'عام'}):\n"
         "• أهداف الدرس: إتقان المفردات والتراكيب المستهدفة.\n"
         "• الأنشطة والألعاب: لعبة الأدوار التبادلية (Role-play) لمدة 10 دقائق.\n"
         "• العرض والحوار: عرض مرئي تفاعلي مبني على إطار كراشن (Comprehensible Input).\n"
@@ -45,30 +49,35 @@ def generate_lesson(req: LessonRequest):
     return {"status": "success", "lesson_plan": plan}
 
 class AnalysisRequest(BaseModel):
-    class_name: str
-    raw_notes: str
+    class_name: Optional[str] = ""
+    raw_notes: Optional[str] = ""
 
 @app.post("/analyze-students")
+@app.post("/api/analyze-students")
 def analyze_students(req: AnalysisRequest):
     report = (
-        f"📊 تقرير محرك مداد الذكي ({req.class_name}):\n"
-        f"• الملاحظات المسجلة: {req.raw_notes}\n"
+        f"📊 تقرير محرك مداد الذكي ({req.class_name or 'عام'}):\n"
+        f"• الملاحظات المسجلة: {req.raw_notes or 'لا توجد'}\n"
         f"• التوجيه الإشرافي: الأداء منتظم والتفاعل الصفي عالي."
     )
     return {"status": "success", "analysis_report": report}
 
 @app.post("/financial-advisor")
+@app.post("/api/financial-advisor")
 def financial_advisor():
     return {"status": "success", "financial_report": "💰 التقرير المالي: الإيرادات التشغيلية ممتازة ونمو الاشتراكات مستمر بنسبة 15%."}
 
 @app.post("/curriculum-plan")
-def curriculum_plan(req: BaseModel):
+@app.post("/api/curriculum-plan")
+def curriculum_plan():
     return {"status": "success", "curriculum_plan": "📚 تم توليد الخطة المنهجية وتوزيع المهارات الأربع على الوحدات بنجاح."}
 
 @app.post("/broadcast-message")
-def broadcast_message(req: BaseModel):
+@app.post("/api/broadcast-message")
+def broadcast_message():
     return {"status": "success", "broadcast": "📨 تمت صياغة التعميم وبثه بنجاح عبر البريد وواتساب لكل شريحة."}
 
 @app.post("/executive-analytics")
+@app.post("/api/executive-analytics")
 def executive_analytics():
     return {"status": "success", "executive_report": "📈 التقارير التنفيذية: الأداء الأكاديمي العام فوق 90% في كافة المعاهد."}
