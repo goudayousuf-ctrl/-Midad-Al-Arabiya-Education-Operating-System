@@ -849,15 +849,27 @@
     }, 800);
   }
 
-  function runStudentPersonalAi() {
+async function runStudentPersonalAi() {
     const query = document.getElementById('studentPersonalQuery').value.trim();
     const out = document.getElementById('studentPersonalAiOutput');
     if(!query) { alert("الرجاء إدخال سؤالك أولاً."); return; }
     out.style.display = 'block';
-    out.innerHTML = `🤖 <b>مساعد مداد يجيب على استفسارك...</b>`;
-    setTimeout(() => {
-      out.innerHTML = `💡 <b>إجابة المساعد:</b> بناءً على درسك الحالي، توظيف هذه القاعدة يتم وفقاً لموقع الكلمة في الجملة.`;
-    }, 800);
+    out.innerHTML = `🤖 <b>جاري الاتصال بخادم بايثون السحابي للطالب...</b>`;
+    try {
+      const res = await fetch('/api/ask-madad', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      });
+      const data = await res.json();
+      if(res.ok && data.status === 'success') {
+        out.innerHTML = `🚀 <b>استجابة حقيقية من بايثون السحابي:</b><br><br>${data.answer.replace(/\n/g, '<br>')}`;
+      } else {
+        out.innerHTML = `❌ <b>خطأ من الخادم السحابي:</b> ${data.detail || JSON.stringify(data)}`;
+      }
+    } catch(e) {
+      out.innerHTML = `❌ <b>فشل الاتصال بالشبكة:</b> ${e.message}`;
+    }
   }
 
   // 2. الاتصال السحابي لدالة المعلم (توليد الدرس والواجب)
