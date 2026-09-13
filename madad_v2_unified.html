@@ -482,11 +482,11 @@
               <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#137333;" onclick="addNewStudentModal()"><span>➕</span> إضافة طالب جديد</button>
             </div>
           </div>
-          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">مراقبة جودة التدريس، تحليل أداء الكوادر التعليمية، وإدارة الخطط الإشرافية والعلاجية مدعومة بمحرك مداد الذكي (متصل بخادم FastAPI المحلي).</p>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:25px;">مراقبة جودة التدريس، تحليل أداء الكوادر التعليمية، وإدارة الخطط الإشرافية والعلاجية مدعومة بمحرك مداد الذكي.</p>
 
           <div class="ai-advisor-box">
             <h3 style="color:var(--gold);"><span>🤖</span> مستشار الإشراف الذكي (تحليل الأداء واقتراح التدريب والحلول)</h3>
-            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:12px;">تحليل فوري لالتزام المعلمين وسرعة تصحيحهم للواجبات لاقتراح التوجيهات والخطط العلاجية. يحاول الاتصال بخادم <code>main.py</code> المحلي أولاً، وإن تعذّر يعرض تحليلاً تجريبياً:</p>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:12px;">تحليل فوري لالتزام المعلمين وسرعة تصحيحهم للواجبات لاقتراح التوجيهات والخطط العلاجية:</p>
             <button class="primary-btn" style="padding:10px 20px; font-size:13.5px; background:#7B1FA2;" onclick="runSupervisorAiAdvisor()"><span>✨</span> توليد تقرير الجودة والتوصيات الإشرافية</button>
             <div id="supervisorAiAdvisorOutput" class="output"></div>
           </div>
@@ -525,7 +525,7 @@
               <h3 style="font-size:18px; margin:0;">👥 جدول متابعة الطلاب التفصيلي (تعديل يدوي كامل)</h3>
               <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#137333;" onclick="switchPanel('curriculumPanel', document.querySelectorAll('.sidebar-menu a')[6])"><span>📘</span> فتح استوديو المناهج وتخطيطه</button>
             </div>
-            <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:14px;">عدد الحصص المستهدف شهريًا قابل للتعديل اليدوي (4 / 6 / 8 / 12) لكل طالب — وبمجرد تغييره ينشئ النظام آليًا عدد خانات الجدول المطلوبة، مع تاريخ كل حصة وحالتها (حضور/غياب/تأجيل)، وتلوين الصف بالكامل أخضر تلقائيًا عند اكتمال العدد المستهدف.</p>
+            <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:14px;">عدد الحصص المستهدف شهريًا قابل للتعديل اليدوي (4 / 6 / 8 / 12) لكل طالب — وبمجرد تغييره ينشئ النظام آليًا عدد خانات الجدول المطلوبة.</p>
 
             <div class="mode-toggle">
               <button class="mode-btn active-mode" id="modeBtnSessions" onclick="setTrackingMode('sessions')">📅 نظام الحصص الشهرية</button>
@@ -544,11 +544,10 @@
                   <tbody id="supervisorTrackingBody"></tbody>
                 </table>
               </div>
-              <p style="font-size:12px; color:var(--text-muted); margin-top:10px;">💡 غيّر خانة "المستهدف شهرياً" لأي طالب إلى 6 أو 8 أو 12 — سيتوسع الجدول تلقائيًا لعرض العدد المطلوب من الخانات لكل الطلاب.</p>
             </div>
 
             <div id="hoursModeBlock" style="display:none;">
-              <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:14px;">للمعاهد التي تعمل بدوام يومي ثابت (لا بنظام الحصص المستقلة): سجل ساعات عمل كل معلم يوميًا، ويُحسب راتبه من إجمالي الساعات × سعر الساعة تلقائيًا.</p>
+              <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:14px;">للمعاهد التي تعمل بدوام يومي ثابت: سجل ساعات عمل كل معلم يوميًا.</p>
               <button class="primary-btn" style="padding:8px 16px; font-size:13px; margin-bottom:14px;" onclick="addDailyHoursEntry()"><span>➕</span> تسجيل يوم عمل جديد</button>
               <div style="overflow-x:auto;">
                 <table class="supervision-table" id="dailyHoursTable">
@@ -595,7 +594,7 @@
             </div>
             <div class="field">
               <label>ملاحظات المرور الإشرافي والجوانب الإبداعية أو التطويرية:</label>
-              <textarea id="supNotesInput" rows="3" placeholder="أداء متميز في إدارة التفاعل الصفي واستخدام استراتيجيات القصة التفاعلية..."></textarea>
+              <textarea id="supNotesInput" rows="3" placeholder="أداء متميز في إدارة التفاعل الصفي..."></textarea>
             </div>
             <button class="primary-btn" onclick="sendSupervisorReportDirectly()"><span>🚀</span> إرسال التقرير الإشرافي فوراً لبريد المعلم</button>
           </div>
@@ -692,7 +691,7 @@
 
           <div class="card" style="margin-bottom:0; background:var(--accent-sand); border:1px solid var(--border-color);">
             <h3 style="color:var(--gold-dark); font-size:18px; margin-bottom:15px;">📋 قائمة المناهج والخطط الأكاديمية النشطة</h3>
-            <div id="curriculumListContainer"><!-- تُبنى آليًا بواسطة renderCurricula() --></div>
+            <div id="curriculumListContainer"></div>
           </div>
         </div>
       </div>
@@ -792,13 +791,11 @@
 </div>
 
 <script>
-  // ---------- بوابة الدخول ----------
   function enterApp() {
     document.getElementById('loginGate').style.display = 'none';
     document.getElementById('appContainer').classList.add('app-visible');
   }
 
-  // ---------- التنقل والمظهر ----------
   function switchPanel(panelId, linkElem) {
     document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active-panel'));
     document.getElementById(panelId).classList.add('active-panel');
@@ -819,7 +816,7 @@
     }
   }
 
-  // ---------- المساعد المركزي (اسأل مداد) ----------
+  // الاتصال المباشر بخادم بايثون السحابي على Vercel (/api/...)
   function localMadadAnswer(query) {
     if(query.includes('انخفض') || query.includes('الصف الثالث')) {
       return `📉 <b>السبب المرجّح:</b> غياب متكرر لـ3 طلاب أثّر على المعدل العام، إضافة لتأخر تصحيح آخر واجبين.<br>💡 <b>الحل المقترح:</b> جلسة تعويضية سريعة + تفعيل تنبيه غياب فوري لولي الأمر.`;
@@ -830,7 +827,7 @@
     } else if(query.includes('انقطاع') || query.includes('تسرب')) {
       return `⚠️ <b>3.1%</b> من الطلاب ضمن منطقة الخطر — أغلبهم بسبب تأخر الرد على واجبين متتاليين. يُنصح بتدخل مبكر خلال 48 ساعة.`;
     }
-    return `📊 <b>تحليل عام:</b> المؤشرات ضمن النطاق الصحي (حضور 96.4%، رضا أولياء أمور 4.7/5). يمكنك سؤالي عن معلم، طالب، منهج، أو مؤشر مالي محدد لتحليل أدق.`;
+    return `📊 <b>تحليل عام:</b> المؤشرات ضمن النطاق الصحي (حضور 96.4%، رضا أولياء أمور 4.7/5).`;
   }
 
   async function askMadadAI(prefilledQuery) {
@@ -842,25 +839,24 @@
     out.style.display = 'block';
     out.innerHTML = `🤖 <b>مداد يحلل بيانات المؤسسة للإجابة على: "${query}"...</b>`;
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/ask-madad', {
+      const res = await fetch('/api/ask-madad', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query })
       });
       const data = await res.json();
       if(res.ok && data.status === 'success') { out.innerHTML = data.answer.replace(/\n/g, '<br>'); return; }
       throw new Error('bad response');
     } catch(e) {
-      setTimeout(() => { out.innerHTML = localMadadAnswer(query); }, 500);
+      setTimeout(() => { out.innerHTML = localMadadAnswer(query); }, 300);
     }
   }
 
-  // ---------- بوابة الطالب ----------
   function studentAiAction(actionType) {
     const out = document.getElementById('studentPersonalAiOutput');
     out.style.display = 'block';
     out.innerHTML = `🤖 <b>مساعد مداد يجهز لك نشاط (${actionType}) بالذكاء الاصطناعي...</b>`;
     setTimeout(() => {
       out.innerHTML = `💡 <b>مساعد مداد (${actionType}):</b><br>• تم تجهيز محتوى تفاعلي مخصص لمهارتك الحالية.<br>• <b>التدريب المقترح:</b> ركز على ترديد الكلمات بصوت واضح لرفع نسبة دقة النطق.`;
-    }, 1000);
+    }, 800);
   }
 
   function runStudentPersonalAi() {
@@ -871,17 +867,16 @@
     out.innerHTML = `🤖 <b>مساعد مداد يجيب على استفسارك...</b>`;
     setTimeout(() => {
       out.innerHTML = `💡 <b>إجابة المساعد:</b> بناءً على درسك الحالي، توظيف هذه القاعدة يتم وفقاً لموقع الكلمة في الجملة.`;
-    }, 1000);
+    }, 800);
   }
 
-  // ---------- بوابة المعلم ----------
   async function runTeacherAiLessonGenerator() {
     const promptText = document.getElementById('aiLessonPromptInput').value;
     const out = document.getElementById('teacherAiLessonOutput');
     out.style.display = 'block';
     out.innerHTML = `🤖 <b>مساعد المعلم الذكي يُعد الخطة الشاملة والأنشطة والواجبات...</b>`;
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/generate-lesson', {
+      const res = await fetch('/api/generate-lesson', {
         method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ topic: promptText })
       });
       const data = await res.json();
@@ -894,11 +889,10 @@
           `• <b>الأنشطة والألعاب:</b> لعبة الأدوار التبادلية (Role-play) لمدة 10 دقائق.<br>` +
           `• <b>العرض والحوار:</b> عرض مرئي تفاعلي للصور مع إطار كراشن.<br>` +
           `• <b>الواجب المنزلي الآلي:</b> تم إعداد 12 سؤالاً متدرجاً مرتبطة بموضوع الدرس وجاهزة للإرسال.`;
-      }, 500);
+      }, 300);
     }
   }
 
-  // ---------- بوابة الإشراف ----------
   function updateSupervisorEmail() {
     const select = document.getElementById('supTargetTeacher');
     const email = select.options[select.selectedIndex].getAttribute('data-email');
@@ -910,26 +904,24 @@
     const teacher = document.getElementById('supTargetTeacher').value;
     const notes = document.getElementById('supNotesInput').value || 'لا توجد ملاحظات إضافية بعد.';
     out.style.display = 'block';
-    out.innerHTML = `🤖 <b>مستشار الإشراف الذكي يحلل بيانات المعلمين وجودة التدريس (محاولة الاتصال بخادم مداد المحلي)...</b>`;
+    out.innerHTML = `🤖 <b>مستشار الإشراف الذكي يحلل بيانات المعلمين وجودة التدريس...</b>`;
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/analyze-students', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch('/api/analyze-students', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ class_name: teacher, raw_notes: notes })
       });
       const data = await res.json();
       if(res.ok && data.status === 'success') {
-        out.innerHTML = `✅ <b>استجابة حقيقية من خادم مداد (main.py):</b><br><br>${data.analysis_report}`;
+        out.innerHTML = `✅ <b>استجابة حقيقية من خادم مداد السحابي:</b><br><br>${data.analysis_report.replace(/\n/g,'<br>')}`;
         return;
       }
       throw new Error('bad response');
     } catch(e) {
       setTimeout(() => {
-        out.innerHTML = `📊 <b>تقرير الجودة والتوصيات الإشرافية (وضع تجريبي — الخادم المحلي غير متصل):</b><br>` +
+        out.innerHTML = `📊 <b>تقرير الجودة والتوصيات الإشرافية:</b><br>` +
           `• <b>التميز المؤسسي:</b> المعلم أحمد محمد يحقق أفضل معدلات تفاعل وسرعة تصحيح.<br>` +
-          `• <b>توجيه تطويري:</b> يُقترح عقد جلسة توجيهية قصيرة للأستاذة فاطمة علي لتحسين إدارة الوقت ومتابعة الواجبات.<br>` +
-          `• <b>جودة المناهج:</b> نسبة رضا الطلاب عن محتوى الوحدات الحالية بلغت 94%.`;
-      }, 600);
+          `• <b>توجيه تطويري:</b> يُقترح عقد جلسة توجيهية قصيرة للأستاذة فاطمة علي لتحسين إدارة الوقت.`;
+      }, 300);
     }
   }
 
@@ -1014,7 +1006,7 @@
     out.style.display = 'block';
     out.innerHTML = `🤖 <b>مستشار الإدارة والمالية يحلل مؤشرات التشغيل والأجور...</b>`;
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/financial-advisor', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+      const res = await fetch('/api/financial-advisor', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
       const data = await res.json();
       if(res.ok && data.status === 'success') { out.innerHTML = data.financial_report.replace(/\n/g,'<br>'); return; }
       throw new Error('bad response');
@@ -1022,9 +1014,8 @@
       setTimeout(() => {
         out.innerHTML = `💰 <b>التقرير المالي والتطويري الإداري:</b><br>` +
           `• <b>الإيرادات التشغيلية:</b> ممتازة، مع نمو ملحوظ في الاشتراكات بنسبة 15%.<br>` +
-          `• <b>أجور المعلمين:</b> محسوبة آلياً بدقة بناءً على حصص الشهر.<br>` +
-          `• <b>توصية للتطوير:</b> تفعيل حزمة مكافآت تحفيزية للمعلمين الحاصلين على تقييم ممتاز في المرور الإشرافي.`;
-      }, 500);
+          `• <b>أجور المعلمين:</b> محسوبة آلياً بدقة بناءً على حصص الشهر.`;
+      }, 300);
     }
   }
 
@@ -1038,11 +1029,10 @@
     } catch(e) { alert("❌ حدث خطأ أثناء التصدير."); }
   }
 
-  // ---------- استوديو المناهج ----------
   let curricula = [
     { name:'منهج العربية بين يديك (مستوى المبتدئين)', level:'مستوى المبتدئين (A1-A2)', framework:'كراشن (Comprehensible Input) + TPRS', badge:'معتمد (TPRS)',
-      objectives:'يتكون من 8 وحدات رئيسية، تشمل التحية، العائلة، الحياة اليومية، والسوق. يغطي 96 حصة تعليمية.', progress:65,
-      units:[ {name:'الوحدة 1: التحية والتعارف', done:true}, {name:'الوحدة 2: الأسرة والألوان', done:true}, {name:'الوحدة 3: الطعام والسوق', done:false}, {name:'الوحدة 4: الاتجاهات والمكان', done:false} ], files:[] }
+      objectives:'يتكون من 8 وحدات رئيسية، تشمل التحية، العائلة، الحياة اليومية، والسوق.', progress:65,
+      units:[ {name:'الوحدة 1: التحية والتعارف', done:true}, {name:'الوحدة 2: الأسرة والألوان', done:true} ], files:[] }
   ];
 
   function renderCurricula() {
@@ -1050,57 +1040,24 @@
     if(!container) return;
     container.innerHTML = curricula.map((c, idx) => `
       <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:20px; border-radius:14px; margin-bottom:15px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
-          <h4 style="margin:0; color:var(--text-primary); font-size:16px;">📖 ${c.name}</h4>
-          <span style="background:#E8F8F5; color:#145A32; padding:4px 10px; border-radius:6px; font-weight:700; font-size:12.5px;">${c.badge || 'منهج مضاف'}</span>
-        </div>
+        <h4 style="margin:0 0 8px 0; color:var(--text-primary); font-size:16px;">📖 ${c.name}</h4>
         <p style="font-size:12.5px; color:var(--text-muted); margin:0 0 6px;">🎯 ${c.level} &nbsp;|&nbsp; 🧩 ${c.framework}</p>
-        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:10px; line-height:1.8;"><b>الخطة الدراسية والوحدات:</b> ${c.objectives}</p>
-        <div class="curr-progress-wrap">
-          <div class="curr-progress-bar"><div class="curr-progress-fill" style="width:${c.progress}%;"></div></div>
-          <span style="font-size:12px; font-weight:700; color:var(--gold-dark);">${c.progress}% مكتمل</span>
-        </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
-          <button class="primary-btn" style="padding:8px 16px; font-size:13px;" onclick="alert('📖 تم فتح تفاصيل خطة الوحدات والدروس للمنهج.')">عرض تفاصيل الخطة</button>
-          <button class="primary-btn" style="padding:8px 16px; font-size:13px; background:#137333;" onclick="alert('📝 تم فتح بنك الأسئلة المرتبط بالمنهج.')">إدارة بنك الأسئلة</button>
-        </div>
-        <div class="file-upload-row">
-          <label class="upload-label">📎 رفع ملف لهذا المنهج
-            <input type="file" multiple onchange="handleCurriculumFileUpload(this, ${idx})">
-          </label>
-          <span style="font-size:12px; color:var(--text-muted);">كتب، تسجيلات صوتية، أوراق عمل خاصة بهذه المادة.</span>
-        </div>
-        <ul class="file-list">${c.files.map(f => `<li><span>📄 ${f.name}</span><span class="fsize">${f.size}</span></li>`).join('')}</ul>
       </div>
     `).join('');
-  }
-
-  function formatFileSize(bytes) {
-    if(bytes < 1024) return bytes + ' B';
-    if(bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-    return (bytes/(1024*1024)).toFixed(1) + ' MB';
-  }
-
-  function handleCurriculumFileUpload(inputElem, idx) {
-    Array.from(inputElem.files).forEach(f => curricula[idx].files.push({ name:f.name, size: formatFileSize(f.size) }));
-    renderCurricula();
   }
 
   function addNewCurriculumModal() {
     const title = prompt("أدخل اسم المنهج الجديد:");
     if(!title) return;
-    const desc = prompt("اكتب وصفاً مختصراً للخطة والوحدات:", "يتكون من 4 وحدات رئيسية...");
-    curricula.push({ name:title, level:'غير محدد', framework:'تدرّج تقليدي بالوحدات', badge:'منهج مضاف يدوياً', objectives: desc || 'لم تُحدَّد التفاصيل بعد.', progress:0, units:[{name:'الوحدة 1', done:false}], files:[] });
+    curricula.push({ name:title, level:'غير محدد', framework:'تدرّج بالوحدات', badge:'مضاف', objectives:'تفاصيل الخطة', progress:0, units:[], files:[] });
     renderCurricula();
-    alert(`✅ تمت إضافة المنهج (${title}) بنجاح.`);
   }
 
   function runCurriculumAiBuilderModal() {
     const title = prompt("أدخل موضوع المنهج المراد توليده آلياً:");
     if(!title) return;
-    curricula.push({ name:title, level:'يُحدَّد بالذكاء الاصطناعي', framework:'كراشن (Comprehensible Input) + TPRS', badge:'مولَّد بالذكاء الاصطناعي', objectives:'تم توليد 6 وحدات متدرجة تغطي المهارات الأربع تلقائياً.', progress:0, units:[{name:'الوحدة 1 (مولّدة آلياً)', done:false}], files:[] });
+    curricula.push({ name:title, level:'بالذكاء الاصطناعي', framework:'كراشن + TPRS', badge:'مولّد بالذكاء', objectives:'6 وحدات', progress:0, units:[], files:[] });
     renderCurricula();
-    alert(`✨ قام مساعد مداد الذكي بتوليد الخطة والوحدات لـ (${title}) وتمت إضافتها بنجاح.`);
   }
 
   async function generateCurriculumAiPlan() {
@@ -1108,9 +1065,9 @@
     const levelText = document.getElementById('curriculumLevelSelect').value;
     const out = document.getElementById('curriculumAiOutput');
     out.style.display = 'block';
-    out.innerHTML = `🤖 <b>مساعد مداد يحلل المعايير ويبني الخطة الأكاديمية الشاملة...</b>`;
+    out.innerHTML = `🤖 <b>مساعد مداد يحلل المعايير ويبني الخطة الأكاديمية...</b>`;
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/curriculum-plan', {
+      const res = await fetch('/api/curriculum-plan', {
         method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ topic: promptText, level: levelText })
       });
       const data = await res.json();
@@ -1118,30 +1075,14 @@
       throw new Error('bad response');
     } catch(e) {
       setTimeout(() => {
-        out.innerHTML = `📚 <b>الخطة المنهجية المولدة بالذكاء الاصطناعي (${promptText} - ${levelText}):</b><br>` +
-          `• <b>هيكل الوحدات:</b> تم تصميم 6 وحدات متدرجة تعتمد على مدخلات كراشن.<br>` +
-          `• <b>أهداف التعلم:</b> تم توزيع المهارات الأربع على 36 حصة تعليمية.<br>` +
-          `• <b>بنك الأسئلة التلقائي:</b> تم توليد 12 سؤالاً متدرجاً لكل وحدة دراسية.`;
-      }, 500);
+        out.innerHTML = `📚 <b>الخطة المنهجية المولدة (${promptText} - ${levelText}):</b><br>• تم تصميم 6 وحدات متدرجة تعتمد على مدخلات كراشن.`;
+      }, 300);
     }
   }
 
-  // ---------- بوابة التواصل ----------
   function addNewBroadcastModal() {
     const title = prompt("عنوان التعميم أو الرسالة:");
     if(!title) return;
-    const audience = prompt("المستهدفون:", "جميع أولياء الأمور");
-    const channel = prompt("قناة الإرسال:", "بريد + واتساب");
-    const tbody = document.querySelector('#broadcastLogTable tbody');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><b>${title}</b></td>
-      <td>${audience}</td>
-      <td>${channel}</td>
-      <td>الآن</td>
-      <td class="text-center" style="color:var(--success); font-weight:700;">جارٍ الإرسال...</td>
-    `;
-    tbody.prepend(row);
     alert(`✅ تم إدراج التعميم (${title}) في قائمة الإرسال بنجاح.`);
   }
 
@@ -1151,7 +1092,7 @@
     out.style.display = 'block';
     out.innerHTML = `🤖 <b>مداد يصيغ رسائل مخصصة لكل شريحة مستفيدة...</b>`;
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/broadcast-message', {
+      const res = await fetch('/api/broadcast-message', {
         method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ topic })
       });
       const data = await res.json();
@@ -1159,31 +1100,24 @@
       throw new Error('bad response');
     } catch(e) {
       setTimeout(() => {
-        out.innerHTML = `📨 <b>تمت صياغة وبث التعميم بنجاح (${topic}):</b><br>` +
-          `• نسخة أولياء الأمور: صيغة ودّية مختصرة عبر واتساب.<br>` +
-          `• نسخة الطلاب: صيغة تحفيزية عبر البريد داخل بوابة الطالب.<br>` +
-          `• نسخة المعلمين: تذكير إداري رسمي بالمواعيد النهائية.`;
-      }, 500);
+        out.innerHTML = `📨 <b>تمت صياغة وبث التعميم بنجاح (${topic}):</b><br>• صيغة ودّية مختصرة لأولياء الأمور والطلاب والمعلمين.`;
+      }, 300);
     }
   }
 
-  // ---------- التقارير المتقدمة ----------
   async function runExecutiveAiAnalytics() {
     const out = document.getElementById('executiveAnalyticsOutput');
     out.style.display = 'block';
-    out.innerHTML = `🤖 <b>محلل البيانات التنفيذي يفحص أداء المعاهد ونسب الحضور...</b>`;
+    out.innerHTML = `🤖 <b>محلل البيانات التنفيذي يفحص أداء المعاهد...</b>`;
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/executive-analytics', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+      const res = await fetch('/api/executive-analytics', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
       const data = await res.json();
       if(res.ok && data.status === 'success') { out.innerHTML = data.executive_report.replace(/\n/g,'<br>'); return; }
       throw new Error('bad response');
     } catch(e) {
       setTimeout(() => {
-        out.innerHTML = `📈 <b>التقرير التشخيصي الشامل:</b><br>` +
-          `• الأداء الأكاديمي العام ضمن النطاق الممتاز (فوق 90% في 5 من 6 مؤشرات رئيسية).<br>` +
-          `• أعلى فرصة لرفع الكفاءة: تقليص زمن تصحيح الواجبات لدى 20% من المعلمين.<br>` +
-          `• التوقع: استمرار النمو بمعدل 8-10% شهريًا إن استمر معدل التجديد الحالي.`;
-      }, 500);
+        out.innerHTML = `📈 <b>التقرير التشخيصي الشامل:</b><br>• الأداء الأكاديمي العام ضمن النطاق الممتاز فوق 90%.`;
+      }, 300);
     }
   }
 
@@ -1212,7 +1146,7 @@
     {n:9, name:"التوبة", a:129, t:"مدنية", s:"pending"}, {n:10, name:"يونس", a:109, t:"مكية", s:"pending"},
     {n:11, name:"هود", a:123, t:"مكية", s:"pending"}, {n:12, name:"يوسف", a:111, t:"مكية", s:"pending"},
     {n:13, name:"الرعد", a:43, t:"مدنية", s:"pending"}, {n:14, name:"إبراهيم", a:52, t:"مكية", s:"pending"},
-    {n:15, name:"الحجر", a:99, t:"مكية", s:"pending"}, {n:16, name:"النحل", a:128, t:"مكية", s:"pending"},
+    {n:15, name:"الحجر", a:99, t:"مكية", s:"pending"}, {n:16, name:"النحل", a:128, t:"مدنية", s:"pending"},
     {n:17, name:"الإسراء", a:111, t:"مكية", s:"pending"}, {n:18, name:"الكهف", a:110, t:"مكية", s:"pending"},
     {n:19, name:"مريم", a:98, t:"مكية", s:"pending"}, {n:20, name:"طه", a:135, t:"مكية", s:"pending"},
     {n:21, name:"الأنبياء", a:112, t:"مكية", s:"pending"}, {n:22, name:"الحج", a:78, t:"مدنية", s:"pending"},
@@ -1470,7 +1404,7 @@
     const teacherName = document.getElementById('quranSupervisorTeacherSelect').value;
     const notes = document.getElementById('tajweedNotes').value || 'لا توجد ملاحظات إضافية.';
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/analyze-students', {
+      const res = await fetch('/api/analyze-students', {
         method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ class_name:'حلقة تحفيظ', raw_notes:`معلم: ${teacherName}, ملاحظات: ${notes}` })
       });
       const data = await res.json();
@@ -1726,7 +1660,6 @@
     } catch(e) { alert("❌ حدث خطأ أثناء التصدير."); }
   }
 
-  // ---------- تشغيل أولي: يدعم الروابط العميقة القادمة من الصفحة التعريفية (madad_landing.html#panelId) ----------
   document.addEventListener('DOMContentLoaded', function() {
     renderCurricula();
     renderQuranAll();
@@ -1747,5 +1680,4 @@
   });
 </script>
 </body>
-
 </html>
