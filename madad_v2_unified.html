@@ -816,7 +816,7 @@
     }
   }
 
-  // الاتصال المباشر بخادم بايثون السحابي على Vercel عبر مسار الـ API النسبي
+ // الاتصال المباشر بخادم بايثون السحابي على Vercel عبر مسار الـ API النسبي
   async function askMadadAI(prefilledQuery) {
     const input = document.getElementById('dashboardAiQuery');
     if(prefilledQuery) input.value = prefilledQuery;
@@ -824,19 +824,21 @@
     const out = document.getElementById('dashboardAiOutput');
     if(!query) { alert('⚠️ الرجاء كتابة سؤالك أولاً.'); return; }
     out.style.display = 'block';
-    out.innerHTML = `🤖 <b>مداد يحلل بيانات المؤسسة السحابية للإجابة على: "${query}"...</b>`;
+    out.innerHTML = `🤖 <b>جاري الاتصال بخادم بايثون السحابي على Vercel...</b>`;
     try {
       const res = await fetch('/api/ask-madad', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query })
       });
       const data = await res.json();
-      if(res.ok && data.status === 'success') { out.innerHTML = data.answer.replace(/\n/g, '<br>'); return; }
-      throw new Error('bad response');
+      if(res.ok && data.status === 'success') {
+        out.innerHTML = `🚀 <b>استجابة حقيقية من بايثون السحابي:</b><br><br>${data.answer.replace(/\n/g, '<br>')}`;
+      } else {
+        out.innerHTML = `❌ <b>خطأ من الخادم السحابي (Status ${res.status}):</b> ${JSON.stringify(data)}`;
+      }
     } catch(e) {
-      out.innerHTML = "❌ خطأ في الاتصال بخادم Vercel السحابي.";
+      out.innerHTML = `❌ <b>فشل الاتصال بالشبكة:</b> ${e.message}`;
     }
   }
-
   function studentAiAction(actionType) {
     const out = document.getElementById('studentPersonalAiOutput');
     out.style.display = 'block';
