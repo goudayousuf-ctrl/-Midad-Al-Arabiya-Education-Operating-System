@@ -1,9 +1,11 @@
+import os
+import time
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional
+from google import genai
 
-app = FastAPI(title="Madad Alarabiyah AI Backend")
+app = FastAPI(title="Madad Alarabiyah AI Engine — Core")
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,71 +15,149 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-@app.get("/api")
-def read_root():
-    return {"status": "online", "message": "خادم مداد السحابي يعمل بنجاح"}
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise RuntimeError("متغير البيئة GEMINI_API_KEY غير موجود في إعدادات Vercel.")
 
+client = genai.Client(api_key=GEMINI_API_KEY)
+
+# =====================================================================
+# دستور مداد المعرفي (قواعد الخبير التربوي والمشرف والباحث الشرعي)
+# =====================================================================
+MADAD_CORE_INSTRUCTION = (
+    "أنت 'مداد العربية AI'، المحرك المعرفي والتشغيلي المركزي لمؤسسات تعليم اللغة العربية، "
+    "القرآن الكريم، والعلوم الشرعية. شخصيتك ومنهجيتك تدمج بين:\n"
+    "1. الخبير التربوي ومصمم المناهج: تستند لنظريات اكتساب اللغة الحديثة (مثل المدخلات المفهومة Comprehensible Input، "
+    "ومنهجية التعلّم القصصي التفاعلي TPRS، والتدرج وفق المعايير الدولية كالإطار الأوروبي CEFR).\n"
+    "2. المشرف التعليمي الحصيف: تُحلل المشكلات الأكاديمية بنظرة تشخيصية تبحث في الأسباب الجذرية لا المظاهر، "
+    "وتطرح حلولاً علاجية وتطويرية إجرائية وقابلة للقياس الميداني.\n"
+    "3. الباحث العلمي والشرعي الرصين: تتحرى الأمانة العلمية والدقة البالغة في أحكام التجويد والعلوم الشرعية والمصطلحات، "
+    "وتقدم مادة موثقة ورصينة بعيدة عن التسطيح أو التكلف.\n"
+    "4. الضوابط الأسلوبية: تحدّث بعربية فصحى بيانية راقية وجزلة. تجنّب تماماً رموز النجوم (*) أو الشباك (#) في التنسيق، "
+    "واعتمد على العناوين الواضحة، والفقرات المترابطة، والجداول التنسيقية المنظمة عند المقارنة أو عرض الخطط."
+)
+
+
+def generate_with_madad_rules(specific_prompt: str) -> str:
+    full_prompt = f"{MADAD_CORE_INSTRUCTION}\n\nالمهمة المطلوبة:\n{specific_prompt}"
+    max_retries = 3
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            chat = client.chats.create(model="gemini-2.0-flash")
+            response = chat.send_message(full_prompt)
+            if response and response.text:
+                return response.text
+            last_error = "استجابة فارغة من المحرك المعرفي."
+        except Exception as e:
+            last_error = str(e)
+            if attempt < max_retries - 1:
+                time.sleep(1.5 * (attempt + 1))
+    raise HTTPException(status_code=502, detail=f"تعذر استدعاء محرك مداد: {last_error}")
+
+
+# ===== نماذج البيانات المدخلة =====
 class AskRequest(BaseModel):
-    query: Optional[str] = ""
-
-@app.post("/ask-madad")
-@app.post("/api/ask-madad")
-def ask_madad(req: AskRequest):
-    q = (req.query or "").strip().lower()
-    if "انخفض" in q or "الصف الثالث" in q:
-        answer = "📉 السبب المرجّح: غياب متكرر لثلاثة طلاب أثّر على المعدل العام، إضافة لتأخر تصحيح آخر واجبين.\n💡 الحل المقترح: جلسة تعويضية سريعة + تفعيل تنبيه غياب فوري لولي الأمر."
-    elif "أفضل" in q or "معلم" in q:
-        answer = "🏆 الترتيب: 1) أحمد محمد (96%) 2) سارة يوسف (94%) 3) فاطمة علي (88%) بناءً على الالتزام وسرعة التصحيح."
-    else:
-        answer = f"📊 تحليل ذكي لسؤالك: المؤشرات ضمن النطاق الصحي (حضور 96.4%، رضا أولياء أمور 4.7/5)."
-    return {"status": "success", "answer": answer}
+    query: str
 
 class LessonRequest(BaseModel):
-    topic: Optional[str] = ""
+    topic: str
 
-@app.post("/generate-lesson")
+class AnalyzeRequest(BaseModel):
+    class_name: str
+    raw_notes: str
+
+class CurriculumRequest(BaseModel):
+    topic: str
+    level: str
+
+class BroadcastRequest(BaseModel):
+    topic: str
+
+
+# ===== نقاط النهاية المفعلة والمشروطة بقواعد مداد =====
+
+@app.post("/api/ask-madad")
+def ask_madad(data: AskRequest):
+    if not data.query or not data.query.strip():
+        raise HTTPException(status_code=400, detail="السؤال أو الاستشارة فارغة.")
+    prompt = (
+        f"بصفتك المستشار التربوي والتنفيذي الأعلى للمؤسسة، أجب عن استشارة الإدارة أو المعلم التالية:\n"
+        f"الاستفسار: {data.query}\n"
+        f"قدّم تحليلاً تشخيصياً لواقع الحالة، يتبعه حلول إجرائية مرتبة وقابلة للتطبيق الفوري في البيئة التعليمية."
+    )
+    return {"status": "success", "answer": generate_with_madad_rules(prompt)}
+
+
 @app.post("/api/generate-lesson")
-def generate_lesson(req: LessonRequest):
-    plan = (
-        f"📚 الخطة التعليمية المولدة عبر سحابة Vercel ({req.topic or 'عام'}):\n"
-        "• أهداف الدرس: إتقان المفردات والتراكيب المستهدفة.\n"
-        "• الأنشطة والألعاب: لعبة الأدوار التبادلية (Role-play) لمدة 10 دقائق.\n"
-        "• العرض والحوار: عرض مرئي تفاعلي مبني على إطار كراشن (Comprehensible Input).\n"
-        "• الواجب المنزلي الآلي: تم إعداد 12 سؤالاً متدرجاً مرتبطاً بموضوع الدرس وجاهزاً للإرسال."
+def generate_lesson(data: LessonRequest):
+    if not data.topic or not data.topic.strip():
+        raise HTTPException(status_code=400, detail="موضوع الدرس فارغ.")
+    prompt = (
+        f"قم بإعداد خطة درس نموذجية متكاملة حول موضوع: ({data.topic}).\n"
+        f"التزم بالهيكل التالي:\n"
+        f"1. الأهداف الإجرائية (معرفية، مهارية، وجدانية).\n"
+        f"2. التهيئة الحافزة وتقديم المفردات الجديدة عبر السياق الطبيعي (Comprehensible Input).\n"
+        f"3. النشاط التفاعلي الرئيس (تطبيق عملي أو تمثيل أدوار TPRS).\n"
+        f"4. تقويم ختامي وتطبيق منزلي يتضمن بنك أسئلة متدرج من 12 فقرة مع مفتاح التصحيح."
     )
-    return {"status": "success", "lesson_plan": plan}
+    return {"status": "success", "lesson_plan": generate_with_madad_rules(prompt)}
 
-class AnalysisRequest(BaseModel):
-    class_name: Optional[str] = ""
-    raw_notes: Optional[str] = ""
 
-@app.post("/analyze-students")
 @app.post("/api/analyze-students")
-def analyze_students(req: AnalysisRequest):
-    report = (
-        f"📊 تقرير محرك مداد الذكي ({req.class_name or 'عام'}):\n"
-        f"• الملاحظات المسجلة: {req.raw_notes or 'لا توجد'}\n"
-        f"• التوجيه الإشرافي: الأداء منتظم والتفاعل الصفي عالي."
+def analyze_students(data: AnalyzeRequest):
+    prompt = (
+        f"بصفتك خبيراً في الإشراف التربوي وضمان الجودة، حلّل التقرير والملاحظات الميدانية لقسم: ({data.class_name}).\n"
+        f"الملاحظات المرصودة:\n{data.raw_notes or 'ملاحظات عامة حول الانتظام والتفاعل'}\n"
+        f"المطلوب: استخراج مؤشرات القوة، نقاط الفجوة الأكاديمية أو السلوكية، ثم صياغة خطة دعم وتغذية راجعة موجهة للمعلم."
     )
-    return {"status": "success", "analysis_report": report}
+    return {"status": "success", "analysis_report": generate_with_madad_rules(prompt)}
 
-@app.post("/financial-advisor")
+
+@app.post("/api/curriculum-plan")
+def curriculum_plan(data: CurriculumRequest):
+    if not data.topic or not data.topic.strip():
+        raise HTTPException(status_code=400, detail="موضوع المنهج فارغ.")
+    prompt = (
+        f"بصفتك خبير بناء وتطوير مناهج تعليم العربية والعلوم المرتبطة بها:\n"
+        f"صمم خارطة منهجية للموضوع: ({data.topic}) والمستوى المستهدف: ({data.level}).\n"
+        f"فصّل الخطة إلى وحدات تعليمية، مع توزيع المهارات الأربع (الاستماع، التحدث، القراءة، الكتابة)، "
+        f"وتحديد الكفايات اللغوية والشرعية المتوقع إتقانها بنهاية المنهج."
+    )
+    return {"status": "success", "curriculum_plan": generate_with_madad_rules(prompt)}
+
+
+@app.post("/api/broadcast-message")
+def broadcast_message(data: BroadcastRequest):
+    if not data.topic or not data.topic.strip():
+        raise HTTPException(status_code=400, detail="موضوع التعميم فارغ.")
+    prompt = (
+        f"صِغ تعميماً مؤسسياً مهنياً وبلاغياً رفيعاً حول: ({data.topic}).\n"
+        f"وفّر نسختين:\n"
+        f"- الأولى: موجهة لأولياء الأمور والطلاب بأسلوب تربوي لطيف ومحفز.\n"
+        f"- الثانية: موجهة للهيئة التعليمية والإدارية بصيغة إدارية تنظيمية دقيقة."
+    )
+    return {"status": "success", "broadcast": generate_with_madad_rules(prompt)}
+
+
 @app.post("/api/financial-advisor")
 def financial_advisor():
-    return {"status": "success", "financial_report": "💰 التقرير المالي: الإيرادات التشغيلية ممتازة ونمو الاشتراكات مستمر بنسبة 15%."}
+    prompt = (
+        "قدّم رؤية استشارية متكاملة لمدير معهد تعليمي لتحقيق التوازن بين الاستدامة المالية "
+        "وتحفيز الكادر التعليمي، مع نماذج مقترحة لمكافآت الأداء المرتبطة بجودة المخرجات التربوية."
+    )
+    return {"status": "success", "financial_report": generate_with_madad_rules(prompt)}
 
-@app.post("/curriculum-plan")
-@app.post("/api/curriculum-plan")
-def curriculum_plan():
-    return {"status": "success", "curriculum_plan": "📚 تم توليد الخطة المنهجية وتوزيع المهارات الأربع على الوحدات بنجاح."}
 
-@app.post("/broadcast-message")
-@app.post("/api/broadcast-message")
-def broadcast_message():
-    return {"status": "success", "broadcast": "📨 تمت صياغة التعميم وبثه بنجاح عبر البريد وواتساب لكل شريحة."}
-
-@app.post("/executive-analytics")
 @app.post("/api/executive-analytics")
 def executive_analytics():
-    return {"status": "success", "executive_report": "📈 التقارير التنفيذية: الأداء الأكاديمي العام فوق 90% في كافة المعاهد."}
+    prompt = (
+        "قدّم تحليلاً تنفيذياً شاملاً لواقع العمل في مؤسسة تعليمية (حضور الطلاب، كفاءة التصحيح، "
+        "معدلات استبقاء الطلاب والحد من التسرب)، مع مصفوفة توصيات إدارية وتربوية للفترة القادمة."
+    )
+    return {"status": "success", "executive_report": generate_with_madad_rules(prompt)}
+
+
+@app.get("/api/health")
+def health():
+    return {"status": "ok", "system": "Madad Engine Active"}
