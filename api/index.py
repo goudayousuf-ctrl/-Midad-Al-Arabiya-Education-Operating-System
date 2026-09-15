@@ -44,8 +44,11 @@ def generate_with_madad_rules(specific_prompt: str) -> str:
     last_error = None
     for attempt in range(max_retries):
         try:
-            chat = client.chats.create(model="gemini-2.0-flash")
-            response = chat.send_message(full_prompt)
+            # استخدام الطريقة المباشرة والأحدث مع النموذج المتاح حالياً
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=full_prompt,
+            )
             if response and response.text:
                 return response.text
             last_error = "استجابة فارغة من المحرك المعرفي."
